@@ -1,4 +1,4 @@
-import { eventBus } from './eventBus.js';
+import { eventBus } from './event_bus.js';
 
 /**
  * OriginOS State Manager

@@ -1,4 +1,4 @@
-import { eventBus } from '../core/eventBus.js';
+import { eventBus } from '../core/event_bus.js';
 
 let displayPhone = null;
 

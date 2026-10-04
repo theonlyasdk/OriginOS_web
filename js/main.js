@@ -1,9 +1,9 @@
-import { eventBus } from './core/eventBus.js';
+import { eventBus } from './core/event_bus.js';
 import { state } from './core/state.js';
 import * as calculator from './apps/calculator.js';
 import * as music from './apps/music.js';
 import * as stopwatch from './apps/stopwatch.js';
-import * as toastAndAlerts from './system/toastAndAlerts.js';
+import * as toastAndAlerts from './system/toast_and_alerts.js';
 
 /**
  * OriginOS Application Bootstrapper
