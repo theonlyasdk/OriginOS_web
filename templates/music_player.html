@@ -1,42 +1,80 @@
-<!-- Music Application Template -->
-<div id="music_container" style="position: absolute; top: 60px; left: 5%; width: 100%">
-  <div class="material-icons plus-icon_music" onclick="openFilePicker_music()">
-    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff">
-      <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
-    </svg>
+<!-- Apple Music / Listen Now Redesigned Template -->
+<div class="apple-music-app" id="apple_music_app">
+  <!-- Top Navigation Header -->
+  <div class="am-header">
+    <div class="am-page-title">Listen Now</div>
+    <div class="am-profile-avatar" onclick="openFilePicker_music()" title="Add Custom Track"></div>
   </div>
 
   <input type="file" id="fileInput_music" accept="audio/*" style="display: none" />
 
-  <div class="playlist_music" id="playlist_music"></div>
-
-  <div class="player-popup_music" id="playerPopup_music">
-    <div onclick="closePlayer_music()" style="background: none;">
-      <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#434343">
-        <path d="m251.33-204.67-46.66-46.66L433.33-480 204.67-708.67l46.66-46.66L480-526.67l228.67-228.66 46.66 46.66L526.67-480l228.66 228.67-46.66 46.66L480-433.33 251.33-204.67Z"/>
-      </svg>
-    </div>
-
-    <img id="popupImage_music" src="" alt="Album Art" />
-    <div class="popup-title_music" id="popupTitle_music"></div>
-    <div class="controls_music">
-      <div onclick="prevTrack_music()">
-        <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="gray">
-          <path d="M220-240v-480h66.67v480H220Zm520 0L389.33-480 740-720v480Z"/>
-        </svg>
+  <!-- Main Scrollable Feed -->
+  <div class="am-content-scroll">
+    <!-- Top Picks Section -->
+    <div class="am-section">
+      <div class="am-section-header">
+        <div class="am-section-title">Top Picks</div>
+        <div class="am-section-subtitle">Just Updated</div>
       </div>
-      <div onclick="togglePlay_music()" id="playPauseIcon_music">
-        <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="gray">
-          <path d="M320-202v-560l440 280-440 280Z" />
-        </svg>
-      </div>
-      <div onclick="nextTrack_music()">
-        <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="gray">
-          <path d="M673.33-240v-480H740v480h-66.67ZM220-240v-480l350.67 240L220-240Z"/>
-        </svg>
+      <div class="am-carousel" id="am_top_picks">
+        <!-- Top picks cards rendered dynamically -->
       </div>
     </div>
-    <audio id="audioPlayer_music" controls style="display: none"></audio>
-    <input type="range" id="progressBar_music" value="0" min="0" max="100" step="0.1" />
+
+    <!-- Recently Played Section -->
+    <div class="am-section">
+      <div class="am-section-header">
+        <div class="am-section-title">
+          <span>Recently Played</span>
+          <i class="hgi-stroke hgi-arrow-right-01" style="font-size: 16px;"></i>
+        </div>
+      </div>
+      <div class="am-recent-list" id="playlist_music">
+        <!-- Track items rendered dynamically -->
+      </div>
+    </div>
   </div>
+
+  <!-- Floating Glass Mini-Player Bar -->
+  <div class="am-mini-player" id="am_mini_player">
+    <div class="am-mini-art" id="am_mini_art"></div>
+    <div class="am-mini-info">
+      <div class="am-mini-title" id="popupTitle_music">Girls</div>
+    </div>
+    <div class="am-mini-controls">
+      <div class="am-mini-btn" id="playPauseIcon_music" onclick="event.stopPropagation(); togglePlay_music()">
+        <i class="hgi-stroke hgi-play" style="font-size: 22px;"></i>
+      </div>
+      <div class="am-mini-btn" onclick="event.stopPropagation(); nextTrack_music()">
+        <i class="hgi-stroke hgi-next" style="font-size: 22px;"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation Tab Bar -->
+  <div class="am-tab-bar">
+    <div class="am-tab-item active">
+      <i class="hgi-stroke hgi-play-circle"></i>
+      <span>Listen Now</span>
+    </div>
+    <div class="am-tab-item">
+      <i class="hgi-stroke hgi-grid"></i>
+      <span>Browse</span>
+    </div>
+    <div class="am-tab-item">
+      <i class="hgi-stroke hgi-radio"></i>
+      <span>Radio</span>
+    </div>
+    <div class="am-tab-item">
+      <i class="hgi-stroke hgi-folder-music"></i>
+      <span>Library</span>
+    </div>
+    <div class="am-tab-item">
+      <i class="hgi-stroke hgi-search-01"></i>
+      <span>Search</span>
+    </div>
+  </div>
+
+  <!-- Hidden native audio element -->
+  <audio id="audioPlayer_music" controls style="display: none"></audio>
 </div>

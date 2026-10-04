@@ -49,6 +49,9 @@ export class OriginOS {
     this.apps.calculator.calculatorApp.init();
     this.apps.compass.init();
     this.apps.calendar.init();
+    if (this.apps.music && typeof this.apps.music.initMusicApp === 'function') {
+      this.apps.music.initMusicApp();
+    }
     this.eventBus.emit('system:ready');
   }
 }
