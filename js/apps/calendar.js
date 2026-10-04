@@ -1,16 +1,23 @@
 import { eventBus } from '../core/event_bus.js';
 
 /**
- * iOS Inspired Calendar Logic
- * Supports Month view, Day hourly schedule, light & dark mode, and adding events.
+ * iOS Calendar App Logic
+ * - Automatic System Theme Detection (removes in-app toggle)
+ * - Spring Transitions between Month and Day views
+ * - Drag-to-dismiss gesture on New Event sheet (mouse + touch)
+ * - Click-outside-to-close on modal backdrop
  */
 class CalendarApp {
   constructor() {
     this.currentDate = new Date();
     this.selectedDate = new Date();
     this.currentView = 'month'; // 'month' or 'day'
-    this.isDarkMode = false;
     this.events = this.loadEvents();
+
+    // Sheet gesture dragging state
+    this.isDraggingSheet = false;
+    this.dragStartY = 0;
+    this.currentDragY = 0;
   }
 
   loadEvents() {
@@ -21,7 +28,6 @@ class CalendarApp {
       console.warn('Could not load saved events:', e);
     }
 
-    // Default sample events inspired by the screenshots
     return [
       { id: '1', date: '2026-04-01', title: 'April Fools', color: 'blue', time: '10:00' },
       { id: '2', date: '2026-04-01', title: 'Lunch with Mom', color: 'red', time: '12:00' },
@@ -46,33 +52,36 @@ class CalendarApp {
     const appEl = document.getElementById('calendar_app');
     if (!appEl) return;
 
-    // Check system or saved dark mode state
-    const savedDark = localStorage.getItem('origin_calendar_theme');
-    if (savedDark === 'dark' || (savedDark === null && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      this.setTheme(true);
-    }
-
+    this.setupSystemThemeSync();
     this.bindEvents();
+    this.setupSheetGesture();
     this.renderMonthView();
     this.renderDayTimeline();
   }
 
-  setTheme(isDark) {
-    this.isDarkMode = isDark;
-    const appEl = document.getElementById('calendar_app');
-    if (appEl) {
+  setupSystemThemeSync() {
+    const updateTheme = () => {
+      const appEl = document.getElementById('calendar_app');
+      if (!appEl) return;
+      const isDark = (typeof window.dark_mode !== 'undefined' && window.dark_mode === 1) ||
+        (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
       if (isDark) {
         appEl.classList.add('dark');
+        appEl.classList.remove('light');
       } else {
         appEl.classList.remove('dark');
+        appEl.classList.add('light');
       }
-    }
-    localStorage.setItem('origin_calendar_theme', isDark ? 'dark' : 'light');
-    eventBus.emit('calendar:theme', { isDark });
-  }
+    };
 
-  toggleTheme() {
-    this.setTheme(!this.isDarkMode);
+    updateTheme();
+
+    if (window.matchMedia) {
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateTheme);
+    }
+    eventBus.on('state:theme', updateTheme);
+    eventBus.on('state:change', updateTheme);
   }
 
   formatDateKey(date) {
@@ -128,7 +137,6 @@ class CalendarApp {
       cell.className = `cal-day-cell ${isToday ? 'is-today' : ''} ${isSelected ? 'is-selected' : ''}`;
       cell.setAttribute('data-date', dateKey);
 
-      // Event badges for this day
       const dayEvents = this.events.filter(e => e.date === dateKey);
       let badgesHtml = '';
       if (dayEvents.length > 0) {
@@ -179,7 +187,6 @@ class CalendarApp {
       const slot = document.createElement('div');
       slot.className = 'cal-hour-slot';
 
-      // Check if any event falls in this hour
       dayEvents.forEach(ev => {
         if (ev.time && ev.time.startsWith(String(hour).padStart(2, '0'))) {
           const evEl = document.createElement('div');
@@ -208,39 +215,155 @@ class CalendarApp {
   }
 
   switchView(viewName) {
+    if (this.currentView === viewName) return;
     this.currentView = viewName;
+
     const monthGrid = document.getElementById('cal_month_grid');
     const dayView = document.getElementById('cal_day_view');
     const segMonth = document.getElementById('cal_seg_month');
     const segDay = document.getElementById('cal_seg_day');
 
     if (viewName === 'month') {
-      if (monthGrid) monthGrid.style.display = 'grid';
-      if (dayView) dayView.style.display = 'none';
       if (segMonth) segMonth.classList.add('active');
       if (segDay) segDay.classList.remove('active');
+
+      if (dayView) {
+        dayView.style.opacity = '0';
+        dayView.style.transform = 'scale(1.04)';
+      }
+      setTimeout(() => {
+        if (dayView) dayView.style.display = 'none';
+        if (monthGrid) {
+          monthGrid.classList.remove('view-hidden');
+          monthGrid.style.display = 'grid';
+          requestAnimationFrame(() => {
+            monthGrid.style.opacity = '1';
+            monthGrid.style.transform = 'scale(1)';
+          });
+        }
+      }, 150);
     } else {
-      if (monthGrid) monthGrid.style.display = 'none';
-      if (dayView) dayView.style.display = 'flex';
       if (segDay) segDay.classList.add('active');
       if (segMonth) segMonth.classList.remove('active');
-      this.renderDayTimeline();
+
+      if (monthGrid) {
+        monthGrid.style.opacity = '0';
+        monthGrid.style.transform = 'scale(0.94)';
+      }
+      setTimeout(() => {
+        if (monthGrid) monthGrid.style.display = 'none';
+        if (dayView) {
+          dayView.style.display = 'flex';
+          this.renderDayTimeline();
+          requestAnimationFrame(() => {
+            dayView.style.opacity = '1';
+            dayView.style.transform = 'scale(1)';
+          });
+        }
+      }, 150);
     }
   }
 
   openEventModal() {
     const modal = document.getElementById('cal_event_modal');
+    const card = document.getElementById('cal_modal_card');
     const badge = document.getElementById('cal_modal_date_badge');
     if (!modal) return;
+
     if (badge) {
       badge.textContent = this.formatDateKey(this.selectedDate);
     }
-    modal.classList.add('open');
+    if (card) {
+      card.style.transform = '';
+      card.style.transition = 'transform 0.42s cubic-bezier(0.2, 0.9, 0.3, 1.05)';
+    }
+
+    modal.style.display = 'flex';
+    requestAnimationFrame(() => {
+      modal.classList.add('open');
+    });
   }
 
   closeEventModal() {
     const modal = document.getElementById('cal_event_modal');
-    if (modal) modal.classList.remove('open');
+    const card = document.getElementById('cal_modal_card');
+    if (!modal) return;
+
+    if (card) {
+      card.style.transform = 'translateY(100%)';
+      card.style.transition = 'transform 0.28s cubic-bezier(0.16, 1, 0.3, 1)';
+    }
+    modal.classList.remove('open');
+    setTimeout(() => {
+      modal.style.display = 'none';
+      if (card) card.style.transform = '';
+    }, 280);
+  }
+
+  setupSheetGesture() {
+    const modal = document.getElementById('cal_event_modal');
+    const card = document.getElementById('cal_modal_card');
+    const handle = document.getElementById('cal_sheet_drag_handle');
+    if (!modal || !card) return;
+
+    // Click outside to close (backdrop tap)
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        this.closeEventModal();
+      }
+    });
+
+    // Drag to close gesture (both mouse and touch)
+    const onDragStart = (clientY) => {
+      this.isDraggingSheet = true;
+      this.dragStartY = clientY;
+      this.currentDragY = 0;
+      card.style.transition = 'none';
+    };
+
+    const onDragMove = (clientY) => {
+      if (!this.isDraggingSheet) return;
+      const deltaY = clientY - this.dragStartY;
+      if (deltaY > 0) {
+        // Dragging downwards
+        this.currentDragY = deltaY;
+        card.style.transform = `translateY(${deltaY}px)`;
+      } else {
+        // Rubber band resistance upwards
+        const resistance = Math.sqrt(Math.abs(deltaY)) * 2;
+        card.style.transform = `translateY(${-resistance}px)`;
+      }
+    };
+
+    const onDragEnd = () => {
+      if (!this.isDraggingSheet) return;
+      this.isDraggingSheet = false;
+
+      // If dragged down past 100px threshold, dismiss
+      if (this.currentDragY > 100) {
+        this.closeEventModal();
+      } else {
+        // Spring snap back to origin
+        card.style.transition = 'transform 0.38s cubic-bezier(0.175, 0.885, 0.32, 1.15)';
+        card.style.transform = 'translateY(0)';
+      }
+    };
+
+    // Handle bar & card top drag listeners
+    const targetEl = handle || card;
+    targetEl.addEventListener('mousedown', (e) => onDragStart(e.clientY));
+    window.addEventListener('mousemove', (e) => onDragMove(e.clientY));
+    window.addEventListener('mouseup', onDragEnd);
+
+    targetEl.addEventListener('touchstart', (e) => {
+      if (e.touches.length > 0) onDragStart(e.touches[0].clientY);
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 0) onDragMove(e.touches[0].clientY);
+    }, { passive: true });
+
+    window.addEventListener('touchend', onDragEnd);
   }
 
   saveNewEvent() {
@@ -272,10 +395,6 @@ class CalendarApp {
   }
 
   bindEvents() {
-    // Theme toggle
-    const themeBtn = document.getElementById('cal_theme_toggle_btn');
-    if (themeBtn) themeBtn.addEventListener('click', () => this.toggleTheme());
-
     // Month Navigation
     const prevBtn = document.getElementById('cal_prev_month_btn');
     if (prevBtn) {
@@ -305,7 +424,7 @@ class CalendarApp {
     if (segMonth) segMonth.addEventListener('click', () => this.switchView('month'));
     if (segDay) segDay.addEventListener('click', () => this.switchView('day'));
 
-    // Add Event Modal
+    // Add Event Modal buttons
     const addBtn = document.getElementById('cal_add_event_btn');
     const cancelBtn = document.getElementById('cal_modal_cancel_btn');
     const saveBtn = document.getElementById('cal_modal_save_btn');
