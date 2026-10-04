@@ -1,5 +1,5 @@
-/* Global Font Standard: Inter Across OriginOS */
-* {
+/* Global Font Standard: Inter Across OriginOS (preserving icon glyph fonts) */
+*:not([class*="hgi-"]):not([class*="material-icons"]) {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
 
