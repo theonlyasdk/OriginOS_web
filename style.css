@@ -880,9 +880,13 @@ body::-webkit-scrollbar-thumb:hover {
   opacity: 1;
   transform: translateX(75%) scale(1);
   border-radius: calc(var(--bg--border_radius_phone) - 1px);
-  transition: all 0.4s ease;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease, box-shadow 0.4s ease;
   pointer-events: all;
   gap: 7px;
+  box-shadow: -12px 0 35px rgba(0, 0, 0, 0.28);
+  will-change: transform, box-shadow, opacity;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 #app4lock {
   overflow: hidden;
@@ -901,6 +905,20 @@ body::-webkit-scrollbar-thumb:hover {
 .app4app.open {
   transform: translateX(-50%) scale(1);
   pointer-events: all;
+  box-shadow: -8px 0 28px rgba(0, 0, 0, 0.22);
+}
+
+/* Incoming screen shadow and depth */
+.app4app.screen-incoming {
+  box-shadow: -18px 0 45px rgba(0, 0, 0, 0.4);
+}
+
+/* Outgoing screen pushed back slightly with dimming and ambient shadow */
+.app4app.screen-outgoing {
+  transform: translateX(-56%) scale(0.97) !important;
+  opacity: 0.88;
+  filter: brightness(0.92);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease, filter 0.4s ease;
 }
 .status-time-widget {
   position: absolute;

@@ -105,11 +105,28 @@ body.dark-mode .calendar-app,
   font-weight: 500;
   color: var(--cal-red);
   cursor: pointer;
-  transition: transform 0.15s var(--ios-spring);
+  transform-origin: left center;
+  transition: transform 0.2s var(--ios-spring), opacity 0.2s ease;
+  will-change: transform;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .cal-nav-left:active {
-  transform: scale(0.96);
+  transform: scale(0.96) translateZ(0);
+  opacity: 0.8;
+}
+
+.cal-nav-left svg,
+.cal-nav-left i {
+  transition: transform 0.2s var(--ios-spring);
+}
+
+.cal-nav-left:active svg,
+.cal-nav-left:active i {
+  transform: translateX(-2px);
 }
 
 .cal-nav-right {
@@ -119,20 +136,40 @@ body.dark-mode .calendar-app,
 }
 
 .cal-icon-btn {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--cal-red);
   cursor: pointer;
-  transition: background 0.15s ease, transform 0.18s var(--ios-spring);
+  background: transparent;
+  transform-origin: center center;
+  transition: background-color 0.2s ease, transform 0.22s var(--ios-spring), box-shadow 0.2s ease;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cal-icon-btn:hover {
+  background: var(--cal-selected-bg);
 }
 
 .cal-icon-btn:active {
   background: var(--cal-selected-bg);
-  transform: scale(0.9);
+  transform: scale(0.88) translateZ(0);
+}
+
+.cal-icon-btn i,
+.cal-icon-btn svg {
+  transition: transform 0.22s var(--ios-spring);
+}
+
+.cal-icon-btn:active i,
+.cal-icon-btn:active svg {
+  transform: scale(0.92);
 }
 
 /* Month Title */
@@ -145,7 +182,13 @@ body.dark-mode .calendar-app,
   font-weight: 700;
   letter-spacing: -0.5px;
   color: var(--cal-text);
-  transition: transform 0.25s var(--ios-spring-soft);
+  transform-origin: left center;
+  transition: transform 0.28s var(--ios-spring-soft), opacity 0.25s ease;
+  will-change: transform, opacity;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 /* Weekday Row (S M T W T F S) */
@@ -160,12 +203,17 @@ body.dark-mode .calendar-app,
   border-bottom: 0.5px solid var(--cal-border);
 }
 
+.cal-weekdays span {
+  transition: color 0.2s ease;
+}
+
 /* Main Views Wrapper */
 .cal-views-wrapper {
   flex: 1;
   overflow-y: auto;
   position: relative;
   scrollbar-width: none;
+  contain: layout paint;
 }
 
 .cal-views-wrapper::-webkit-scrollbar {
@@ -175,24 +223,27 @@ body.dark-mode .calendar-app,
 /* Smooth Spring View Switching Animation Container */
 .cal-month-grid,
 .cal-day-view {
-  transition: opacity 0.28s var(--ios-spring-smooth), transform 0.35s var(--ios-spring-soft);
+  transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), transform 0.32s cubic-bezier(0.2, 0.9, 0.3, 1.05);
   will-change: opacity, transform;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Month View Grid */
 .cal-month-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 1px;
+  gap: 2px;
   padding: 6px 8px;
   box-sizing: border-box;
   opacity: 1;
-  transform: scale(1);
+  transform: scale(1) translateZ(0);
+  transform-origin: center top;
 }
 
 .cal-month-grid.view-hidden {
   opacity: 0;
-  transform: scale(0.94);
+  transform: scale(0.96) translateZ(0);
   pointer-events: none;
   position: absolute;
   top: 0;
@@ -205,34 +256,63 @@ body.dark-mode .calendar-app,
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-radius: 8px;
-  padding: 3px 1px;
+  border-radius: 10px;
+  padding: 4px 1px;
   cursor: pointer;
-  transition: background 0.15s ease, transform 0.2s var(--ios-spring);
+  transform-origin: center center;
+  transition: background-color 0.18s ease, transform 0.22s var(--ios-spring);
   position: relative;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cal-day-cell:hover:not(.other-month) {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+body.dark-mode .cal-day-cell:hover:not(.other-month),
+.calendar-app.dark .cal-day-cell:hover:not(.other-month) {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .cal-day-cell:active {
-  transform: scale(0.92);
+  transform: scale(0.92) translateZ(0);
   background: var(--cal-selected-bg);
 }
 
+.cal-day-cell.other-month {
+  cursor: default;
+}
+
+.cal-day-cell.other-month:active {
+  transform: none;
+  background: transparent;
+}
+
 .cal-day-cell.other-month .cal-day-number {
-  opacity: 0.3;
+  opacity: 0.28;
 }
 
 .cal-day-number {
   font-size: 0.95rem;
   font-weight: 500;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   color: var(--cal-text);
   margin-bottom: 2px;
-  transition: background-color 0.2s var(--ios-spring), color 0.2s ease, transform 0.2s var(--ios-spring);
+  transform-origin: center center;
+  transition: background-color 0.22s var(--ios-spring), color 0.18s ease, transform 0.22s var(--ios-spring), box-shadow 0.22s ease;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-font-smoothing: antialiased;
 }
 
 .cal-day-cell.is-today .cal-day-number {
@@ -240,11 +320,17 @@ body.dark-mode .calendar-app,
   color: #ffffff !important;
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(255, 59, 48, 0.4);
+  transform: scale(1.05) translateZ(0);
 }
 
 .cal-day-cell.is-selected:not(.is-today) .cal-day-number {
   background: var(--cal-selected-bg);
   font-weight: 600;
+  transform: scale(1.04) translateZ(0);
+}
+
+.cal-day-cell:active .cal-day-number {
+  transform: scale(0.95) translateZ(0);
 }
 
 /* Event badges in month grid */
@@ -356,19 +442,25 @@ body.dark-mode .calendar-app,
   position: absolute;
   left: 6px;
   right: 12px;
-  border-radius: 6px;
+  border-radius: 8px;
   padding: 6px 10px;
   font-size: 0.8rem;
   font-weight: 500;
   background: rgba(0, 122, 255, 0.16);
-  border-left: 3px solid var(--cal-blue);
+  border-left: 3.5px solid var(--cal-blue);
   color: var(--cal-blue);
   cursor: pointer;
-  transition: transform 0.2s var(--ios-spring);
+  transform-origin: center center;
+  transition: transform 0.22s var(--ios-spring), background-color 0.18s ease;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-font-smoothing: antialiased;
 }
 
 .cal-schedule-event:active {
-  transform: scale(0.98);
+  transform: scale(0.98) translateZ(0);
+  background: rgba(0, 122, 255, 0.24);
 }
 
 /* Bottom Bar */
@@ -379,6 +471,7 @@ body.dark-mode .calendar-app,
   padding: 8px 16px 16px 16px;
   background: var(--cal-bg);
   border-top: 0.5px solid var(--cal-border);
+  z-index: 20;
 }
 
 .cal-today-btn {
@@ -389,12 +482,18 @@ body.dark-mode .calendar-app,
   background: var(--cal-selected-bg);
   color: var(--cal-text);
   cursor: pointer;
-  transition: transform 0.2s var(--ios-spring), background 0.15s ease;
+  transform-origin: center center;
+  transition: transform 0.22s var(--ios-spring), background-color 0.18s ease, opacity 0.18s ease;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .cal-today-btn:active {
-  transform: scale(0.92);
-  opacity: 0.8;
+  transform: scale(0.92) translateZ(0);
+  opacity: 0.82;
 }
 
 .cal-segmented-controls {
@@ -403,6 +502,7 @@ body.dark-mode .calendar-app,
   padding: 3px;
   border-radius: 20px;
   gap: 2px;
+  transform: translateZ(0);
 }
 
 .cal-seg-btn {
@@ -415,18 +515,29 @@ body.dark-mode .calendar-app,
   display: flex;
   align-items: center;
   gap: 4px;
-  transition: all 0.25s var(--ios-spring);
+  transform-origin: center center;
+  transition: all 0.26s cubic-bezier(0.175, 0.885, 0.32, 1.15);
+  will-change: transform, background, color;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cal-seg-btn svg,
+.cal-seg-btn i {
+  transition: transform 0.22s var(--ios-spring);
 }
 
 .cal-seg-btn.active {
   background: var(--cal-bg);
   color: var(--cal-text);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-  transform: scale(1.02);
+  transform: scale(1.02) translateZ(0);
 }
 
 .cal-seg-btn:active {
-  transform: scale(0.95);
+  transform: scale(0.94) translateZ(0);
 }
 
 /* iOS Spring Bottom Sheet Modal */
@@ -441,6 +552,7 @@ body.dark-mode .calendar-app,
   align-items: flex-end;
   opacity: 0;
   transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity;
 }
 
 .cal-modal-backdrop.open {
@@ -461,14 +573,16 @@ body.dark-mode .calendar-app,
   gap: 14px;
   overflow-y: auto;
   box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.35);
-  transform: translateY(100%);
+  transform: translateY(100%) translateZ(0);
   transition: transform 0.42s var(--ios-spring-soft);
   will-change: transform;
   touch-action: none;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
 .cal-modal-backdrop.open .cal-modal-card {
-  transform: translateY(0);
+  transform: translateY(0) translateZ(0);
 }
 
 /* Drag handle bar at sheet top */
@@ -479,12 +593,15 @@ body.dark-mode .calendar-app,
   background: var(--cal-handle-bg);
   margin: 0 auto 6px auto;
   cursor: grab;
-  transition: background 0.15s ease, transform 0.15s var(--ios-spring);
+  transform-origin: center center;
+  transition: background-color 0.15s ease, transform 0.18s var(--ios-spring);
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .cal-sheet-drag-handle:active {
   cursor: grabbing;
-  transform: scaleX(1.15);
+  transform: scaleX(1.2) scaleY(1.1) translateZ(0);
 }
 
 .cal-modal-header {
@@ -498,6 +615,7 @@ body.dark-mode .calendar-app,
   font-size: 1.05rem;
   font-weight: 600;
   color: var(--cal-text);
+  -webkit-font-smoothing: antialiased;
 }
 
 .cal-modal-close {
@@ -510,11 +628,16 @@ body.dark-mode .calendar-app,
   justify-content: center;
   color: var(--cal-subtext);
   cursor: pointer;
-  transition: transform 0.2s var(--ios-spring);
+  transform-origin: center center;
+  transition: transform 0.2s var(--ios-spring), background-color 0.15s ease;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-tap-highlight-color: transparent;
 }
 
 .cal-modal-close:active {
-  transform: scale(0.9);
+  transform: scale(0.9) translateZ(0);
 }
 
 .cal-modal-save {
@@ -527,11 +650,16 @@ body.dark-mode .calendar-app,
   justify-content: center;
   color: #ffffff;
   cursor: pointer;
-  transition: transform 0.2s var(--ios-spring);
+  transform-origin: center center;
+  transition: transform 0.2s var(--ios-spring), background-color 0.15s ease;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-tap-highlight-color: transparent;
 }
 
 .cal-modal-save:active {
-  transform: scale(0.9);
+  transform: scale(0.9) translateZ(0);
 }
 
 /* Modal Form Inputs */

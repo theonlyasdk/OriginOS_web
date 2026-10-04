@@ -157,7 +157,14 @@ class CalendarApp {
 
       cell.addEventListener('click', () => {
         this.selectedDate = thisDate;
-        this.renderMonthView();
+        const allCells = gridEl.querySelectorAll('.cal-day-cell');
+        allCells.forEach(c => {
+          if (c.getAttribute('data-date') === dateKey) {
+            c.classList.add('is-selected');
+          } else {
+            c.classList.remove('is-selected');
+          }
+        });
         this.updateDayHeader();
       });
 

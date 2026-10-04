@@ -78,10 +78,19 @@ function showPopup_open_close(target, mode = "flex", className = "open") {
   }
 
   el.style.display = mode;
+  el.classList.add("screen-incoming");
+
+  // Add outgoing depth effect to the main settings container or parent view
+  if (app4main && el !== app4main) {
+    app4main.classList.add("screen-outgoing");
+  }
 
   requestAnimationFrame(() => {
     el.classList.remove("close");
     el.classList.add(className);
+    setTimeout(() => {
+      el.classList.remove("screen-incoming");
+    }, 400);
   });
 }
 
@@ -95,9 +104,16 @@ function hidePopup_open_close(target, mode = "none", className = "open") {
   const id = el.id;
 
   el.classList.remove(className);
+  el.classList.add("close");
+
+  // Restore outgoing screen to active forefront
+  if (app4main && el !== app4main) {
+    app4main.classList.remove("screen-outgoing");
+  }
 
   hideTimeouts_open_close[id] = setTimeout(() => {
     el.style.display = mode;
+    el.classList.remove("close");
     hideTimeouts_open_close[id] = null;
   }, currentSpeed700);
 }
