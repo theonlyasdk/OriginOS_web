@@ -1,40 +1,70 @@
-<!-- Calculator Application Template -->
-<div class="display_calc" id="display_calc">0</div>
-<div class="buttons_calc">
-  <button class="btn_calc gray_calc" onclick="clearDisplay_calc()">
-    AC
-  </button>
-  <button class="btn_calc gray_calc" onclick="backspace_calc()">
-    ⌫
-  </button>
-  <button class="btn_calc gray_calc" onclick="append_calc('+/-')">
-    ±
-  </button>
-  <button class="btn_calc orange_calc" onclick="append_calc(':')">
-    ÷
-  </button>
-  <button class="btn_calc" onclick="append_calc('7')">7</button>
-  <button class="btn_calc" onclick="append_calc('8')">8</button>
-  <button class="btn_calc" onclick="append_calc('9')">9</button>
-  <button class="btn_calc orange_calc" onclick="append_calc('×')">
-    ×
-  </button>
-  <button class="btn_calc" onclick="append_calc('4')">4</button>
-  <button class="btn_calc" onclick="append_calc('5')">5</button>
-  <button class="btn_calc" onclick="append_calc('6')">6</button>
-  <button class="btn_calc orange_calc" onclick="append_calc('-')">
-    −
-  </button>
-  <button class="btn_calc" onclick="append_calc('1')">1</button>
-  <button class="btn_calc" onclick="append_calc('2')">2</button>
-  <button class="btn_calc" onclick="append_calc('3')">3</button>
-  <button class="btn_calc orange_calc" onclick="append_calc('+')">
-    +
-  </button>
-  <button class="btn_calc" onclick="append_calc('%')">%</button>
-  <button class="btn_calc" onclick="append_calc('0')">0</button>
-  <button class="btn_calc" onclick="append_calc('.')">.</button>
-  <button class="btn_calc equal_calc" onclick="calculate_calc()">
-    =
-  </button>
+<!-- iOS 26 Inspired Calculator Template -->
+<div class="ios-calc-app" id="ios_calc_app">
+  <!-- Top Bar with History & Mode Icons -->
+  <div class="ios-calc-top-bar">
+    <div class="ios-calc-icon-btn" id="ios_calc_history_btn" title="History">
+      <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+        <path d="M480-120q-75 0-140.5-28.5t-114-77q-48.5-48.5-77-114T120-480q0-75 28.5-140.5t77-114q48.5-48.5 114-77T480-840q82 0 155.5 35T760-708v-92h80v240H600v-80h110q-41-56-101-88t-129-32q-117 0-198.5 81.5T200-480q0 117 81.5 198.5T480-200q105 0 183.5-68T756-440h82q-14 116-101.5 198T480-120Zm-40-200v-160l110-66 40 68-80 48v110h-70Z"/>
+      </svg>
+    </div>
+    <div class="ios-calc-icon-btn" id="ios_calc_mode_btn" title="Conversion / Math">
+      <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+        <path d="M280-240h80v-80h-80v80Zm0-160h80v-80h-80v80Zm0-160h80v-80h-80v80Zm160 320h80v-80h-80v80Zm0-160h80v-80h-80v80Zm0-160h80v-80h-80v80Zm160 320h80v-80h-80v80Zm0-160h80v-80h-80v80Zm0-160h80v-80h-80v80ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0 0v-560 560Z"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- History Drawer -->
+  <div class="ios-calc-history-drawer" id="ios_calc_history_drawer">
+    <div style="font-size:0.75rem; color:#8e8e93; font-weight:600; margin-bottom:4px;">CALCULATION HISTORY</div>
+    <div id="ios_calc_history_list">
+      <div class="ios-calc-history-item">
+        <span class="ios-calc-history-expr">38,670 ÷ 50,000</span>
+        <span class="ios-calc-history-res">0.7734</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dual Display (Expression & Result) -->
+  <div class="ios-calc-display-container">
+    <div class="ios-calc-expression" id="ios_calc_expr"></div>
+    <div class="ios-calc-result" id="display_calc">0</div>
+  </div>
+
+  <!-- Keypad (Exact layout from iOS 26 Screenshot) -->
+  <div class="ios-calc-keypad">
+    <!-- Row 1: Backspace, AC, %, ÷ -->
+    <button class="ios-calc-btn func" id="btn_backspace" onclick="backspace_calc()" title="Backspace">
+      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+        <path d="m456-320 104-104 104 104 56-56-104-104 104-104-56-56-104 104-104-104-56 56 104 104-104 104 56 56Zm-96 160q-19 0-36-8.5T296-192L80-480l216-288q11-15 28-23.5t36-8.5h440q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H360Z"/>
+      </svg>
+    </button>
+    <button class="ios-calc-btn func" id="btn_clear" onclick="clearDisplay_calc()">AC</button>
+    <button class="ios-calc-btn func" onclick="append_calc('%')">%</button>
+    <button class="ios-calc-btn op" onclick="append_calc(':')">÷</button>
+
+    <!-- Row 2: 7, 8, 9, × -->
+    <button class="ios-calc-btn num" onclick="append_calc('7')">7</button>
+    <button class="ios-calc-btn num" onclick="append_calc('8')">8</button>
+    <button class="ios-calc-btn num" onclick="append_calc('9')">9</button>
+    <button class="ios-calc-btn op" onclick="append_calc('×')">×</button>
+
+    <!-- Row 3: 4, 5, 6, - -->
+    <button class="ios-calc-btn num" onclick="append_calc('4')">4</button>
+    <button class="ios-calc-btn num" onclick="append_calc('5')">5</button>
+    <button class="ios-calc-btn num" onclick="append_calc('6')">6</button>
+    <button class="ios-calc-btn op" onclick="append_calc('-')">−</button>
+
+    <!-- Row 4: 1, 2, 3, + -->
+    <button class="ios-calc-btn num" onclick="append_calc('1')">1</button>
+    <button class="ios-calc-btn num" onclick="append_calc('2')">2</button>
+    <button class="ios-calc-btn num" onclick="append_calc('3')">3</button>
+    <button class="ios-calc-btn op" onclick="append_calc('+')">+</button>
+
+    <!-- Row 5: +/-, 0, ., = -->
+    <button class="ios-calc-btn func" onclick="append_calc('+/-')">+/−</button>
+    <button class="ios-calc-btn num" onclick="append_calc('0')">0</button>
+    <button class="ios-calc-btn num" onclick="append_calc('.')">.</button>
+    <button class="ios-calc-btn op" onclick="calculate_calc()">=</button>
+  </div>
 </div>

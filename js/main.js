@@ -46,6 +46,7 @@ export class OriginOS {
 
   init() {
     console.log('[OriginOS] OS Core Initialized');
+    this.apps.calculator.calculatorApp.init();
     this.apps.compass.init();
     this.apps.calendar.init();
     this.eventBus.emit('system:ready');
