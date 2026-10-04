@@ -5,9 +5,9 @@
   --bg--ratio_phone: 330 / 700;
   --bg--size_width_phone: 330px;
   --bg--size_height_phone: 700px;
-  --bg--border_radius_phone: 50px;
+  --bg--border_radius_phone: 60px;
   --bg--scale_phone: 0.8;
-  --bg--border_radius_system: 35px; /* 20-35px */
+  --bg--border_radius_system: 44px; /* 20-35px */
   --bg--background: #eaeaea;
   --bg--background2: #ffffff;
   --bg--color: #101010;

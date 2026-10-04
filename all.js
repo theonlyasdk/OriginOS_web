@@ -2032,11 +2032,12 @@ function updateRotation() {
     translateX(${-ratio * 80}px)`;
     item.style.zIndex = z;
   });
-  updatePhoneScale();
 }
 updateRotation();
 row.addEventListener("scroll", updateRotation);
 window.addEventListener("resize", updateRotation);
+// Fixed phone size: computed once on load, never re-scaled on zoom/resize.
+updatePhoneScale();
 
 function removeWithFade(elementOrId, duration = 500) {
   // Nếu là chuỗi (id), chuyển thành element
@@ -2394,6 +2395,4 @@ function updatePhoneScaleFullScreen() {
   root.style.setProperty("--bg--scale_phone", S.toFixed(3));
 }
 
-if (window.visualViewport) {
-  window.visualViewport.addEventListener("resize", updatePhoneScale);
-}
+// NOTE: visualViewport resize listener removed — phone size stays fixed on zoom.

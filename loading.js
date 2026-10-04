@@ -65,6 +65,22 @@ function removeEventListener_setup() {
   disagreeBtn_setup.removeEventListener("click", resetAnimation_setup);
 }
 
+// Returning user: skip the "Get started" setup screen immediately.
+// Runs at parse time (DOM above is already parsed) so no later error
+// in any DOMContentLoaded handler can prevent it.
+try {
+  if (localStorage.getItem("setup_completed") === "1") {
+    removeEventListener_setup();
+    const _setupScreen = document.getElementById("setup_screenid_setup");
+    if (_setupScreen) _setupScreen.remove();
+    const _allApp = document.getElementById("allApp");
+    if (_allApp) _allApp.style.display = "flex";
+    if (typeof powerbtn !== "undefined" && typeof powerbtnEvent !== "undefined" && powerbtn) {
+      powerbtn.addEventListener("click", powerbtnEvent);
+    }
+  }
+} catch (_e) { /* private-mode storage: fall back to showing setup */ }
+
 restoreSettings_finger_pass();
 
 window.addEventListener("DOMContentLoaded", () => {

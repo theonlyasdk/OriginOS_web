@@ -1,0 +1,39 @@
+/* Apple-like G3 continuous corners (squircles).
+   Uses the CSS corner-shape spec (Chrome 139+, Safari 26+).
+   Unsupported browsers ignore corner-shape and fall back to border-radius. */
+
+.controls,
+.cal-modal-card,
+.player-popup_music,
+.cal-event-card,
+.cal-input-group {
+  corner-shape: squircle;
+}
+
+/* Phone + system shells get the deepest continuous curve */
+.phone-frame,
+.system-shell,
+.app4app {
+  corner-shape: squircle;
+}
+
+/* Home-screen app icons + icon-pack previews */
+.box,
+.box::before,
+.mini_icon {
+  corner-shape: squircle;
+}
+
+@supports not (corner-shape: squircle) {
+  /* Fallback: slightly larger radii approximate the fuller G3 look */
+  .controls {
+    border-radius: 56px 56px 0 0;
+  }
+  .cal-modal-card {
+    border-top-left-radius: 34px;
+    border-top-right-radius: 34px;
+  }
+  .player-popup_music {
+    border-radius: 30px;
+  }
+}

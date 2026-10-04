@@ -7,7 +7,7 @@
   flex-direction: column;
   justify-content: flex-end;
   box-sizing: border-box;
-  padding: 16px 14px 24px 14px;
+  padding: 0 13px calc(28px + 13px) 13px;
   user-select: none;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
   overflow: hidden;
@@ -113,17 +113,18 @@
   max-width: 100%;
 }
 
-/* Primary Result (Large bottom line, e.g. 0.7734) */
+/* Primary Result (Large bottom line) */
 .ios-calc-result {
-  font-size: 3.6rem;
+  font-size: 4.6rem;
   font-weight: 300;
   color: #ffffff;
   line-height: 1;
   letter-spacing: -1px;
   text-align: right;
-  word-break: break-all;
+  word-break: normal;
+  white-space: nowrap;
+  overflow: hidden;
   max-width: 100%;
-  transition: font-size 0.15s ease;
 }
 
 /* Keypad Grid (4 columns x 5 rows) */
@@ -140,20 +141,29 @@
   border: none;
   outline: none;
   aspect-ratio: 1 / 1;
+  min-height: 69px;
   border-radius: 50%;
-  font-size: 1.7rem;
-  font-weight: 400;
+  font-size: 2rem;
+  font-weight: 500;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: filter 0.15s ease, transform 0.08s ease, background 0.15s ease;
+  transition: filter 0.1s ease, background 0.15s ease;
   -webkit-tap-highlight-color: transparent;
 }
 
 .ios-calc-btn:active {
-  transform: scale(0.92);
-  filter: brightness(130%);
+  filter: brightness(120%);
+}
+
+/* Wide zero key (spans 2 columns, pill) */
+.ios-calc-btn.zero {
+  grid-column: span 2;
+  aspect-ratio: auto;
+  border-radius: 999px;
+  justify-content: flex-start;
+  padding-left: 26px;
 }
 
 /* Dark Grey Number Buttons (0-9, .) */
@@ -162,19 +172,19 @@
   color: #ffffff;
 }
 
-/* Light Grey Function Buttons (Backspace, AC, %, +/-) */
+/* Light Grey Function Buttons (AC, +/-, %) */
 .ios-calc-btn.func {
-  background-color: #5c5c5e;
-  color: #ffffff;
-  font-size: 1.45rem;
+  background-color: #a5a5a5;
+  color: #000000;
+  font-size: 1.9rem;
 }
 
 /* Vivid Orange Operator Buttons (÷, ×, -, +, =) */
 .ios-calc-btn.op {
   background-color: #ff9f0a;
   color: #ffffff;
-  font-size: 1.85rem;
-  font-weight: 400;
+  font-size: 2.1rem;
+  font-weight: 500;
 }
 
 .ios-calc-btn.op.active {

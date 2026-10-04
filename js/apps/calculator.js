@@ -40,14 +40,12 @@ class CalculatorApp {
     const exprDisp = this.getExprDisplay();
     if (disp) {
       disp.innerText = this.formatNumber(this.currentInput);
-      // Auto shrink font for long numbers
-      const len = this.currentInput.length;
-      if (len > 10) {
-        disp.style.fontSize = '2.2rem';
-      } else if (len > 7) {
-        disp.style.fontSize = '2.8rem';
-      } else {
-        disp.style.fontSize = '3.6rem';
+      // Shrink until the number fits, applied synchronously (no transition on the element)
+      let size = 73.6; // 4.6rem
+      disp.style.fontSize = size + 'px';
+      while (disp.scrollWidth > disp.clientWidth && size > 28) {
+        size -= 2;
+        disp.style.fontSize = size + 'px';
       }
     }
     if (exprDisp) {
@@ -199,6 +197,16 @@ class CalculatorApp {
         historyDrawer.classList.toggle('show');
       });
     }
+
+    // Hardware-keyboard Backspace support (no ⌫ key on the iOS keypad)
+    document.addEventListener('keydown', (e) => {
+      const appEl = document.getElementById('ios_calc_app');
+      if (!appEl || appEl.offsetParent === null) return;
+      if (e.key === 'Backspace') {
+        e.preventDefault();
+        this.backspace();
+      }
+    });
 
     this.renderHistory();
     this.updateDisplay();

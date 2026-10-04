@@ -56,6 +56,7 @@
     <link rel="stylesheet" href="css/apps/calculator.css" />
     <link rel="stylesheet" href="css/apps/music.css" />
     <link rel="stylesheet" href="css/base/squircle.css" />
+    <link rel="stylesheet" href="css/base/scrollbars.css" />
     <!-- Hugeicons Font -->
     <link rel="stylesheet" href="https://use.hugeicons.com/font/icons.css" />
   </head>
@@ -266,6 +267,7 @@
             <button
               id="btn_goto_setup"
               onclick="
+            localStorage.setItem('setup_completed', '1');
             removeEventListener_setup();
             removeWithFade('setup_screenid_setup');
             document.getElementById('allApp').style.display = 'flex';
@@ -595,12 +597,8 @@
               </div>
 
               <div class="ios-calc-keypad">
-                <button class="ios-calc-btn func" id="btn_backspace" onclick="backspace_calc()" title="Backspace">
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                    <path d="m456-320 104-104 104 104 56-56-104-104 104-104-56-56-104 104-104-104-56 56 104 104-104 104 56 56Zm-96 160q-19 0-36-8.5T296-192L80-480l216-288q11-15 28-23.5t36-8.5h440q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H360Z"/>
-                  </svg>
-                </button>
                 <button class="ios-calc-btn func" id="btn_clear" onclick="clearDisplay_calc()">AC</button>
+                <button class="ios-calc-btn func" onclick="append_calc('+/-')">+/−</button>
                 <button class="ios-calc-btn func" onclick="append_calc('%')">%</button>
                 <button class="ios-calc-btn op" onclick="append_calc(':')">÷</button>
 
@@ -619,8 +617,7 @@
                 <button class="ios-calc-btn num" onclick="append_calc('3')">3</button>
                 <button class="ios-calc-btn op" onclick="append_calc('+')">+</button>
 
-                <button class="ios-calc-btn func" onclick="append_calc('+/-')">+/−</button>
-                <button class="ios-calc-btn num" onclick="append_calc('0')">0</button>
+                <button class="ios-calc-btn num zero" onclick="append_calc('0')">0</button>
                 <button class="ios-calc-btn num" onclick="append_calc('.')">.</button>
                 <button class="ios-calc-btn op" onclick="calculate_calc()">=</button>
               </div>
@@ -667,13 +664,14 @@
                 <div class="am-mini-art" id="am_mini_art"></div>
                 <div class="am-mini-info">
                   <div class="am-mini-title" id="popupTitle_music">Girls</div>
+                  <div class="am-mini-artist" id="popupArtist_music">Phonk Nation</div>
                 </div>
                 <div class="am-mini-controls">
                   <div class="am-mini-btn" id="playPauseIcon_music" onclick="event.stopPropagation(); togglePlay_music()">
-                    <i class="hgi-stroke hgi-play" style="font-size: 22px;"></i>
+                    <i class="hgi-stroke hgi-play" style="font-size: 28px;"></i>
                   </div>
                   <div class="am-mini-btn" onclick="event.stopPropagation(); nextTrack_music()">
-                    <i class="hgi-stroke hgi-next" style="font-size: 22px;"></i>
+                    <i class="hgi-stroke hgi-next" style="font-size: 28px;"></i>
                   </div>
                 </div>
               </div>
@@ -698,6 +696,42 @@
                 <div class="am-tab-item">
                   <i class="hgi-stroke hgi-search-01"></i>
                   <span>Search</span>
+                </div>
+              </div>
+
+              <!-- Full Now Playing View (tap mini-player to expand) -->
+              <div class="am-now-playing" id="am_now_playing">
+                <div class="am-np-bg" id="am_np_bg"></div>
+                <div class="am-np-top-bar">
+                  <div class="am-np-close" id="am_np_close">
+                    <i class="hgi-stroke hgi-arrow-down-01" style="font-size: 24px;"></i>
+                  </div>
+                </div>
+                <div class="am-np-art" id="am_np_art"></div>
+                <div class="am-np-titles">
+                  <div class="am-np-title" id="am_np_title">HEADPHONK</div>
+                  <div class="am-np-artist" id="am_np_artist">Phonk Nation</div>
+                </div>
+                <div class="am-np-progress">
+                  <input type="range" class="am-np-slider" id="am_np_slider" value="0" min="0" max="100" step="0.1" />
+                  <div class="am-np-times">
+                    <span id="am_np_elapsed">0:00</span>
+                    <span id="am_np_duration">0:00</span>
+                  </div>
+                </div>
+                <div class="am-np-controls">
+                  <div class="am-mini-btn" onclick="event.stopPropagation(); prevTrack_music()">
+                    <i class="hgi-stroke hgi-next" style="font-size: 38px; transform: scaleX(-1);"></i>
+                  </div>
+                  <div class="am-mini-btn" id="am_np_playpause" onclick="event.stopPropagation(); togglePlay_music()">
+                    <i class="hgi-stroke hgi-play" style="font-size: 64px;" id="am_np_playpause_icon"></i>
+                  </div>
+                  <div class="am-mini-btn" onclick="event.stopPropagation(); nextTrack_music()">
+                    <i class="hgi-stroke hgi-next" style="font-size: 38px;"></i>
+                  </div>
+                </div>
+                <div class="am-np-volume">
+                  <input type="range" class="am-np-vol-slider" id="am_np_volume" value="100" min="0" max="100" />
                 </div>
               </div>
 
@@ -1169,7 +1203,7 @@
 
                 <div class="app4app" id="app4UnlockAnimation">
                   <div class="back-button" id="back_UnlockAnimation">
-                    Unlock animation
+                    Unlock Animation
                   </div>
                   <div class="all_cubic_custom_opening">
                     <div
@@ -1177,7 +1211,7 @@
                       id="reset_anim_unlock_btn"
                     >
                       <div class="setting-title" style="font-size: 20px">
-                        Reset to defaults
+                        Reset to Defaults
                       </div>
                     </div>
 
@@ -1317,63 +1351,63 @@
                         data-anim="1"
                         data-group="1"
                       >
-                        Zoom out by layer 1 <span>Default</span>
+                        Layered Zoom <span>Default</span>
                       </div>
                       <div
                         class="item_unlock_anim"
                         data-anim="1"
                         data-group="3"
                       >
-                        Zoom out by layer 2
+                        Staggered Zoom
                       </div>
                       <div
                         class="item_unlock_anim"
                         data-anim="3"
                         data-group="3"
                       >
-                        Zoom in by layer
+                        Cascade In
                       </div>
                       <div
                         class="item_unlock_anim"
                         data-anim="3"
                         data-group="2"
                       >
-                        Zoom in 1
+                        Zoom In
                       </div>
                       <div
                         class="item_unlock_anim"
                         data-anim="2"
                         data-group="2"
                       >
-                        Zoom in 2
+                        Pop In
                       </div>
                       <div
                         class="item_unlock_anim"
                         data-anim="1"
                         data-group="2"
                       >
-                        Zoom out
+                        Zoom Out
                       </div>
                       <div
                         class="item_unlock_anim"
                         data-anim="5"
                         data-group="2"
                       >
-                        Fly up 1
+                        Float Up
                       </div>
                       <div
                         class="item_unlock_anim"
                         data-anim="5"
                         data-group="3"
                       >
-                        Fly up 2
+                        Wave Up
                       </div>
                     </div>
 
                     <div class="section">
-                      <h3>Unlock Animation Speed</h3>
+                      <h3>Animation Speed</h3>
                       <div class="label">
-                        Speed: <span id="timeAnimationUnlockVal">0.6</span>s
+                        Speed <span id="timeAnimationUnlockVal">0.6</span>
                       </div>
                       <input
                         type="range"
@@ -1385,7 +1419,7 @@
                       />
 
                       <div class="label">
-                        Easing: <span id="easingAnimationUnlockVal">0.25</span>
+                        Easing <span id="easingAnimationUnlockVal">0.25</span>
                       </div>
                       <input
                         type="range"
@@ -1400,7 +1434,7 @@
                 </div>
                 <div class="app4app" id="app4AppOpeningAnimation">
                   <div class="back-button" id="back_AppOpeningAnimation">
-                    App opening animation
+                    App Launch Animation
                   </div>
                   <div class="all_cubic_custom_opening">
                     <div
@@ -1408,16 +1442,15 @@
                       id="reset_anim_open_app_btn"
                     >
                       <div class="setting-title" style="font-size: 20px">
-                        reset
+                        Reset to Defaults
                       </div>
                     </div>
 
                     <div class="section" id="section-aspect">
-                      <h3>Aspect-Ratio Animation</h3>
+                      <h3>Aspect Ratio Transition</h3>
 
                       <div class="label">
-                        cubic-bezier:
-                        <span id="cubicAspectVal">0.07, 0.74, 0.37, 0.98</span>
+                        Curve <span id="cubicAspectVal">0.07, 0.74, 0.37, 0.98</span>
                       </div>
 
                       <div class="bezier-container" id="bezierAspect">
@@ -1432,10 +1465,10 @@
                     </div>
 
                     <div class="section" id="section-all">
-                      <h3>Icon Scale Animation</h3>
+                      <h3>Icon Scale Effect</h3>
 
                       <div class="label">
-                        Time: <span id="timeAllVal">0.4</span>s
+                        Duration <span id="timeAllVal">0.4</span>s
                       </div>
                       <input
                         type="range"
@@ -1447,8 +1480,7 @@
                       />
 
                       <div class="label">
-                        cubic-bezier:
-                        <span id="cubicAllVal">0.25, 0.1, 0.25, 1</span>
+                        Curve <span id="cubicAllVal">0.25, 0.1, 0.25, 1</span>
                       </div>
 
                       <div class="bezier-container" id="bezierAll">
@@ -1466,7 +1498,7 @@
                     </div>
 
                     <div class="section">
-                      <h3>Wallpaper scale</h3>
+                      <h3>Wallpaper Scale</h3>
 
                       <div class="phonePreviewAll">
                         <div
@@ -1476,7 +1508,7 @@
                       </div>
 
                       <div class="label">
-                        Scale: <span id="scaleWallpaperAnimVal">110</span>%
+                        Zoom Level <span id="scaleWallpaperAnimVal">110</span>%
                       </div>
                       <input
                         type="range"
@@ -1489,7 +1521,7 @@
                     </div>
 
                     <div class="section">
-                      <h3>Application screen scale</h3>
+                      <h3>Home Screen Scale</h3>
 
                       <div class="phonePreviewAll">
                         <div class="gridAppScreen" id="scaleAllAppPreivew">
@@ -1525,7 +1557,7 @@
                       </div>
 
                       <div class="label">
-                        Scale: <span id="scaleAllAppVal">110</span>%
+                        Zoom Level <span id="scaleAllAppVal">110</span>%
                       </div>
                       <input
                         type="range"
@@ -1538,7 +1570,7 @@
                     </div>
 
                     <div class="section">
-                      <h3>Application screen scale</h3>
+                      <h3>Background Blur</h3>
 
                       <div class="phonePreviewAll">
                         <div
@@ -1582,7 +1614,7 @@
                       </div>
 
                       <div class="label">
-                        Blur: <span id="blurAllAppVal">20</span>px
+                        Radius <span id="blurAllAppVal">20</span>px
                       </div>
                       <input
                         type="range"
@@ -1593,12 +1625,12 @@
                         value="20"
                       />
                       <div class="footer-text-positionab">
-                        High values may cause performance issues on some devices
+                        Higher values may impact performance
                       </div>
                     </div>
 
                     <div class="section">
-                      <h3>Icon position and hiding time when open app</h3>
+                      <h3>Icon Fade Behavior</h3>
                       <div class="phonePreviewAll">
                         <div class="open" id="previewPositionIcon"></div>
                       </div>
@@ -1634,7 +1666,7 @@
                       </div>
 
                       <div class="label">
-                        Time: <span id="timeHidingIconVal">0.3</span>s
+                        Duration <span id="timeHidingIconVal">0.3</span>s
                       </div>
                       <input
                         type="range"
@@ -1646,7 +1678,7 @@
                       />
 
                       <div class="label">
-                        Delay time: <span id="delayHidingIconVal">0</span>s
+                        Delay <span id="delayHidingIconVal">0</span>s
                       </div>
                       <input
                         type="range"
@@ -1659,7 +1691,7 @@
                     </div>
 
                     <div class="setting-item_volume sectionForSttingItem">
-                      <div class="setting-title_volume">Parallel animation</div>
+                      <div class="setting-title_volume">Parallel Animation</div>
                       <div
                         class="toggle-switch_volume active"
                         id="parallelAnimationToggle"
@@ -1667,7 +1699,7 @@
                     </div>
 
                     <div class="setting-item_volume sectionForSttingItem">
-                      <div class="setting-title_volume">Multiple click animations</div>
+                      <div class="setting-title_volume">Continuous Tap Animation</div>
                       <div
                         class="toggle-switch_volume active"
                         id="multipleClickAppToggle"
@@ -1677,7 +1709,7 @@
                 </div>
                 <div class="app4app" id="app4AppClosingAnimation">
                   <div class="back-button" id="back_AppClosingAnimation">
-                    App closing animation
+                    App Exit Animation
                   </div>
                   <div class="all_cubic_custom_opening">
                     <div
@@ -1685,10 +1717,11 @@
                       id="reset_anim_close_app_btn"
                     >
                       <div class="setting-title" style="font-size: 20px">
-                        reset
+                        Reset to Defaults
                       </div>
                     </div>
                     <div class="section">
+                      <h3>Position Transition</h3>
                       <div
                         class="preview-outer"
                         style="width: 240px; height: 240px"
@@ -1699,7 +1732,7 @@
                         ></div>
                       </div>
                       <div class="label">
-                        Time: <span id="timeTransformClosingVal">0.5</span>s
+                        Duration <span id="timeTransformClosingVal">0.5</span>s
                       </div>
                       <input
                         type="range"
@@ -1711,7 +1744,7 @@
                       />
 
                       <div class="label">
-                        Damping: <span id="dampingTransformClosingVal">0</span>
+                        Damping <span id="dampingTransformClosingVal">0</span>
                       </div>
                       <input
                         type="range"
@@ -1724,6 +1757,7 @@
                     </div>
 
                     <div class="section">
+                      <h3>Scale Transition</h3>
                       <div
                         class="preview-outer"
                         style="width: 240px; height: 240px"
@@ -1734,7 +1768,7 @@
                         ></div>
                       </div>
                       <div class="label">
-                        Time: <span id="timeScaleClosingVal">0.5</span>s
+                        Duration <span id="timeScaleClosingVal">0.5</span>s
                       </div>
                       <input
                         type="range"
@@ -1746,7 +1780,7 @@
                       />
 
                       <div class="label">
-                        Damping: <span id="dampingScaleClosingVal">0</span>
+                        Damping <span id="dampingScaleClosingVal">0</span>
                       </div>
                       <input
                         type="range"
@@ -1758,7 +1792,7 @@
                       />
 
                       <div class="label">
-                        Easing: <span id="easingScaleClosingVal">0.75</span>
+                        Easing <span id="easingScaleClosingVal">0.75</span>
                       </div>
                       <input
                         type="range"
@@ -1771,9 +1805,9 @@
                     </div>
 
                     <div class="section">
-                      <h3>Time showing icon when closing app</h3>
+                      <h3>Icon Reappear Delay</h3>
                       <div class="label">
-                        Time: <span id="timeShowingIconVal">0.05</span>s
+                        Duration <span id="timeShowingIconVal">0.05</span>s
                       </div>
                       <input
                         type="range"
@@ -1785,7 +1819,7 @@
                       />
 
                       <div class="label">
-                        Delay time: <span id="delayShowingIconVal">0.3</span>s
+                        Delay <span id="delayShowingIconVal">0.3</span>s
                       </div>
                       <input
                         type="range"
@@ -1798,9 +1832,9 @@
                     </div>
 
                     <div class="section">
-                      <h3>Navigation bar sensitivity and maximum drag</h3>
+                      <h3>Gesture Navigation Bar</h3>
                       <div class="label">
-                        sensitivity: <span id="sensitivityNavBarVal">0.08</span>
+                        Sensitivity <span id="sensitivityNavBarVal">0.08</span>
                       </div>
                       <input
                         type="range"
@@ -1812,7 +1846,7 @@
                       />
 
                       <div class="label">
-                        maximum drag: <span id="maxDragNavVal">150</span>px
+                        Maximum Drag <span id="maxDragNavVal">150</span>px
                       </div>
                       <input
                         type="range"
@@ -1828,7 +1862,7 @@
 
                 <div class="app4app" id="app4ControlsCenterAnim">
                   <div class="back-button" id="back_ControlsCenterAnim">
-                    Controls center animation
+                    Control Center Animation
                   </div>
                   <div class="phone_preview">
                     <div
@@ -3574,15 +3608,15 @@
             <div class="calendar-app" id="calendar_app">
               <div class="calendar-nav-bar">
                 <div class="cal-nav-left" id="cal_prev_month_btn">
-                  <i class="hgi-stroke hgi-arrow-left-01" style="font-size: 1.15rem;"></i>
+                  <i class="hgi-stroke hgi-arrow-left-01" style="font-size: 17px;"></i>
                   <span id="cal_year_btn">2026</span>
                 </div>
                 <div class="cal-nav-right">
                   <div class="cal-icon-btn" id="cal_search_btn">
-                    <i class="hgi-stroke hgi-search-01" style="font-size: 1.25rem;"></i>
+                    <i class="hgi-stroke hgi-search-01" style="font-size: 22px;"></i>
                   </div>
                   <div class="cal-icon-btn" id="cal_add_event_btn">
-                    <i class="hgi-stroke hgi-plus-sign" style="font-size: 1.3rem;"></i>
+                    <i class="hgi-stroke hgi-plus-sign" style="font-size: 22px;"></i>
                   </div>
                 </div>
               </div>
@@ -3610,11 +3644,9 @@
                 <div class="cal-today-btn" id="cal_today_btn">Today</div>
                 <div class="cal-segmented-controls">
                   <div class="cal-seg-btn active" id="cal_seg_month">
-                    <i class="hgi-stroke hgi-calendar-03" style="font-size: 1rem;"></i>
                     <span>Month</span>
                   </div>
                   <div class="cal-seg-btn" id="cal_seg_day">
-                    <i class="hgi-stroke hgi-clock-01" style="font-size: 1rem;"></i>
                     <span>Day</span>
                   </div>
                 </div>
@@ -3629,7 +3661,10 @@
                     </div>
                     <div class="cal-modal-title">New Event</div>
                     <div class="cal-modal-save" id="cal_modal_save_btn">
-                      <i class="hgi-stroke hgi-checkmark-circle-02" style="font-size: 1.15rem;"></i>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="1.15rem" height="1.15rem" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none" />
+                        <path fill="currentColor" fill-rule="evenodd" d="M18.381 5.354a.75.75 0 0 1 .265 1.027l-7.087 12a.75.75 0 0 1-1.164.16L5.48 13.838a.75.75 0 0 1 1.038-1.084l4.23 4.051L17.353 5.62a.75.75 0 0 1 1.027-.265" clip-rule="evenodd" />
+                      </svg>
                     </div>
                   </div>
 
@@ -3655,7 +3690,7 @@
         </div>
         <div class="box" id="box8">
           <div class="app" id="app8">
-            <div class="container_phone">
+            <div class="container_phone" id="dialer_view">
               <div class="display_phone" id="display_phone"></div>
               <div class="keypad_phone">
                 <button class="btn_phone" onclick="append_phone('1')">
@@ -3721,8 +3756,20 @@
                 </button>
               </div>
             </div>
+            <div class="recents_phone" id="recents_view" style="display: none">
+              <div class="recents-header_phone">
+                <div class="recents-edit_phone" onclick="clearRecents_phone()">Clear</div>
+                <div class="recents-title_phone">Recents</div>
+                <div style="width: 44px"></div>
+              </div>
+              <div class="recents-seg_phone">
+                <div class="recents-seg-btn_phone active" id="seg_all_phone" onclick="filterRecents_phone('all')">All</div>
+                <div class="recents-seg-btn_phone" id="seg_missed_phone" onclick="filterRecents_phone('missed')">Missed</div>
+              </div>
+              <div class="recents-list_phone" id="recents_list_phone"></div>
+            </div>
             <div class="navbar_phone">
-              <div class="navitem_phone active" id="Dialer">
+              <div class="navitem_phone active" id="Dialer" onclick="switchPhoneTab('dialer')">
                 <div
                   class="navicon_phone"
                   style="
@@ -3732,6 +3779,18 @@
                   "
                 ></div>
                 Dialer
+              </div>
+              <div class="navitem_phone" id="RecentsTab" onclick="switchPhoneTab('recents')">
+                <div
+                  class="navicon_phone"
+                  style="
+                    background: url('originos_data/system_clock.png') no-repeat
+                      center;
+                    background-size: contain;
+                    filter: invert(0.3);
+                  "
+                ></div>
+                Recents
               </div>
               <div class="navitem_phone" id="Contacts">
                 <div
@@ -3783,11 +3842,6 @@
             <div class="compass-app" id="compass_app">
               <div class="compass-top-bar">
                 <div class="compass-title">Compass</div>
-                <div class="compass-settings-btn" id="compass_settings_btn">
-                  <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#888">
-                    <path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm112-280q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Z"/>
-                  </svg>
-                </div>
               </div>
 
               <div class="compass-dial-container">
@@ -3825,16 +3879,19 @@
               <div class="compass-bottom-bar">
                 <div class="compass-tab active" id="tab_compass">
                   <div class="tab-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="currentColor">
-                      <path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm160-440-240 80 80-240 240-80-80 240Z"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="22px" width="22px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="9" />
+                      <polygon points="15.5,8.5 13.2,13.2 8.5,15.5 10.8,10.8" fill="currentColor" stroke="none" />
                     </svg>
                   </div>
                   <span>Compass</span>
                 </div>
                 <div class="compass-tab" id="tab_level">
                   <div class="tab-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="currentColor">
-                      <path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm-40-200h80v-80h-80v80Zm0-160h80v-80h-80v80Z"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="22px" width="22px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="9" />
+                      <line x1="5.5" y1="12" x2="18.5" y2="12" />
+                      <circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" />
                     </svg>
                   </div>
                   <span>Level</span>

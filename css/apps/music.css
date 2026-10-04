@@ -14,7 +14,7 @@
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Dark Mode Adaptation */
+/* Dark Mode follows the simulated OriginOS theme (never the real OS) */
 .apple-music-app.dark,
 body.dark-mode .apple-music-app,
 [data-theme="dark"] .apple-music-app {
@@ -22,26 +22,19 @@ body.dark-mode .apple-music-app,
   color: #ffffff;
 }
 
-@media (prefers-color-scheme: dark) {
-  .apple-music-app:not(.light) {
-    background-color: #000000;
-    color: #ffffff;
-  }
-}
-
 /* Header with Title and User Avatar */
 .am-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 42px 18px 12px 18px;
+  padding: calc(env(safe-area-inset-top, 0px) + 44px) 16px 10px 16px;
   flex-shrink: 0;
 }
 
 .am-page-title {
-  font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: -0.5px;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
 }
 
 .am-profile-avatar {
@@ -59,12 +52,7 @@ body.dark-mode .apple-music-app,
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding-bottom: 120px;
-  scrollbar-width: none;
-}
-
-.am-content-scroll::-webkit-scrollbar {
-  display: none;
+  padding-bottom: 152px;
 }
 
 /* Section Header (Top Picks, Recently Played) */
@@ -73,11 +61,11 @@ body.dark-mode .apple-music-app,
 }
 
 .am-section-header {
-  padding: 0 18px 10px 18px;
+  padding: 0 16px 8px 16px;
 }
 
 .am-section-title {
-  font-size: 1.25rem;
+  font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.3px;
   display: flex;
@@ -97,11 +85,18 @@ body.dark-mode .apple-music-app,
 /* Horizontal Card Carousel (Top Picks) */
 .am-carousel {
   display: flex;
-  gap: 14px;
+  gap: 16px;
   overflow-x: auto;
-  padding: 0 18px 12px 18px;
+  padding: 0 16px 12px 16px;
   scrollbar-width: none;
   scroll-snap-type: x mandatory;
+  scroll-padding: 0 16px;
+  touch-action: pan-x pan-y;
+  cursor: grab;
+}
+
+.am-carousel:active {
+  cursor: grabbing;
 }
 
 .am-carousel::-webkit-scrollbar {
@@ -109,13 +104,13 @@ body.dark-mode .apple-music-app,
 }
 
 .am-hero-card {
-  flex: 0 0 240px;
-  height: 290px;
-  border-radius: 16px;
+  flex: 0 0 300px;
+  height: 320px;
+  border-radius: 10px;
   overflow: hidden;
   position: relative;
   scroll-snap-align: start;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
   cursor: pointer;
   transition: transform 0.2s var(--ios-spring);
   display: flex;
@@ -133,28 +128,28 @@ body.dark-mode .apple-music-app,
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0) 100%);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 60%);
   pointer-events: none;
 }
 
 .am-hero-card-content {
   position: relative;
   z-index: 2;
-  padding: 16px;
+  padding: 14px;
   color: #ffffff;
 }
 
 .am-hero-badge {
   font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
-  color: #fa2d48;
+  color: #FA1744;
   margin-bottom: 4px;
 }
 
 .am-hero-title {
-  font-size: 1.2rem;
+  font-size: 21px;
   font-weight: 700;
   line-height: 1.2;
 }
@@ -169,10 +164,18 @@ body.dark-mode .apple-music-app,
 /* Horizontal Square Cards (Recently Played) */
 .am-recent-list {
   display: flex;
-  gap: 14px;
+  gap: 16px;
   overflow-x: auto;
-  padding: 0 18px;
+  padding: 0 16px 14px 16px;
   scrollbar-width: none;
+  scroll-snap-type: x proximity;
+  scroll-padding: 0 16px;
+  touch-action: pan-x pan-y;
+  cursor: grab;
+}
+
+.am-recent-list:active {
+  cursor: grabbing;
 }
 
 .am-recent-list::-webkit-scrollbar {
@@ -180,7 +183,8 @@ body.dark-mode .apple-music-app,
 }
 
 .am-recent-item {
-  flex: 0 0 135px;
+  flex: 0 0 150px;
+  scroll-snap-align: start;
   cursor: pointer;
   transition: transform 0.18s var(--ios-spring);
 }
@@ -190,9 +194,9 @@ body.dark-mode .apple-music-app,
 }
 
 .am-recent-art {
-  width: 135px;
-  height: 135px;
-  border-radius: 12px;
+  width: 150px;
+  height: 150px;
+  border-radius: 8px;
   background-size: cover;
   background-position: center;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
@@ -219,14 +223,14 @@ body.dark-mode .apple-music-app,
 /* Floating Glass Mini-Player Bar */
 .am-mini-player {
   position: absolute;
-  bottom: 56px;
-  left: 14px;
-  right: 14px;
-  height: 52px;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  border-radius: 14px;
+  bottom: 72px;
+  left: 12px;
+  right: 12px;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   padding: 0 12px;
@@ -239,11 +243,10 @@ body.dark-mode .apple-music-app,
 }
 
 .apple-music-app.dark .am-mini-player,
-@media (prefers-color-scheme: dark) {
-  .apple-music-app .am-mini-player {
-    background: rgba(30, 30, 32, 0.85);
-    border-color: rgba(255, 255, 255, 0.1);
-  }
+body.dark-mode .apple-music-app .am-mini-player,
+[data-theme="dark"] .apple-music-app .am-mini-player {
+  background: rgba(30, 30, 32, 0.85);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .am-mini-player:active {
@@ -251,8 +254,8 @@ body.dark-mode .apple-music-app,
 }
 
 .am-mini-art {
-  width: 36px;
-  height: 36px;
+  width: 48px;
+  height: 48px;
   border-radius: 6px;
   background-size: cover;
   background-position: center;
@@ -266,8 +269,17 @@ body.dark-mode .apple-music-app,
 }
 
 .am-mini-title {
-  font-size: 0.88rem;
+  font-size: 14px;
   font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.am-mini-artist {
+  font-size: 12px;
+  font-weight: 400;
+  color: #8e8e93;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -276,7 +288,7 @@ body.dark-mode .apple-music-app,
 .am-mini-controls {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 20px;
   color: inherit;
 }
 
@@ -299,11 +311,13 @@ body.dark-mode .apple-music-app,
   bottom: 0;
   left: 0;
   right: 0;
-  height: 54px;
+  height: calc(49px + env(safe-area-inset-bottom, 21px));
+  padding-bottom: env(safe-area-inset-bottom, 21px);
+  box-sizing: border-box;
   background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  border-top: 0.5px solid rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border-top: 0.5px solid rgba(60, 60, 67, 0.12);
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -311,11 +325,10 @@ body.dark-mode .apple-music-app,
 }
 
 .apple-music-app.dark .am-tab-bar,
-@media (prefers-color-scheme: dark) {
-  .apple-music-app .am-tab-bar {
-    background: rgba(20, 20, 20, 0.92);
-    border-top-color: rgba(255, 255, 255, 0.08);
-  }
+body.dark-mode .apple-music-app .am-tab-bar,
+[data-theme="dark"] .apple-music-app .am-tab-bar {
+  background: rgba(20, 20, 20, 0.92);
+  border-top-color: rgba(255, 255, 255, 0.08);
 }
 
 .am-tab-item {
@@ -331,9 +344,153 @@ body.dark-mode .apple-music-app,
 }
 
 .am-tab-item.active {
-  color: #fa2d48;
+  color: #FA1744;
 }
 
 .am-tab-item i {
-  font-size: 19px;
+  font-size: 25px;
+}
+
+/* Full Now Playing View */
+.am-now-playing {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: calc(env(safe-area-inset-top, 0px) + 12px) 24px calc(env(safe-area-inset-bottom, 0px) + 24px) 24px;
+  box-sizing: border-box;
+  background: rgba(20, 20, 22, 0.96);
+  color: #ffffff;
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.3s ease;
+  overflow: hidden;
+}
+
+.am-now-playing.open {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.am-now-playing.swipe-drag {
+  transition: none;
+}
+
+.am-np-bg {
+  position: absolute;
+  inset: -40px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(60px) brightness(0.7) saturate(1.4);
+  z-index: 0;
+}
+
+.am-np-top-bar {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  z-index: 2;
+  margin-bottom: 8px;
+}
+
+.am-np-close {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.am-np-close:active {
+  opacity: 0.5;
+}
+
+.am-np-art {
+  width: 260px;
+  height: 260px;
+  border-radius: 16px;
+  background-size: cover;
+  background-position: center;
+  background-color: #333;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+  flex-shrink: 0;
+  margin-top: 12px;
+}
+
+.am-np-titles {
+  width: 100%;
+  margin-top: 24px;
+  z-index: 2;
+}
+
+.am-np-title {
+  font-size: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.am-np-artist {
+  font-size: 20px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.am-np-progress {
+  width: 100%;
+  margin-top: 16px;
+  z-index: 2;
+}
+
+.am-np-slider {
+  width: 100%;
+  accent-color: rgba(255, 255, 255, 0.85);
+  height: 24px;
+  cursor: pointer;
+}
+
+.am-np-times {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-top: -2px;
+}
+
+.am-np-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 36px;
+  margin-top: 12px;
+  color: #ffffff;
+  z-index: 2;
+}
+
+.am-np-volume {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  color: rgba(255, 255, 255, 0.6);
+  z-index: 2;
+}
+
+.am-np-vol-slider {
+  flex: 1;
+  accent-color: rgba(255, 255, 255, 0.85);
+  height: 24px;
+  cursor: pointer;
 }

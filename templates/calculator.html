@@ -31,15 +31,11 @@
     <div class="ios-calc-result" id="display_calc">0</div>
   </div>
 
-  <!-- Keypad (Exact layout from iOS 26 Screenshot) -->
+  <!-- Keypad (iOS layout) -->
   <div class="ios-calc-keypad">
-    <!-- Row 1: Backspace, AC, %, ÷ -->
-    <button class="ios-calc-btn func" id="btn_backspace" onclick="backspace_calc()" title="Backspace">
-      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-        <path d="m456-320 104-104 104 104 56-56-104-104 104-104-56-56-104 104-104-104-56 56 104 104-104 104 56 56Zm-96 160q-19 0-36-8.5T296-192L80-480l216-288q11-15 28-23.5t36-8.5h440q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H360Z"/>
-      </svg>
-    </button>
+    <!-- Row 1: AC, +/-, %, ÷ -->
     <button class="ios-calc-btn func" id="btn_clear" onclick="clearDisplay_calc()">AC</button>
+    <button class="ios-calc-btn func" onclick="append_calc('+/-')">+/−</button>
     <button class="ios-calc-btn func" onclick="append_calc('%')">%</button>
     <button class="ios-calc-btn op" onclick="append_calc(':')">÷</button>
 
@@ -61,9 +57,8 @@
     <button class="ios-calc-btn num" onclick="append_calc('3')">3</button>
     <button class="ios-calc-btn op" onclick="append_calc('+')">+</button>
 
-    <!-- Row 5: +/-, 0, ., = -->
-    <button class="ios-calc-btn func" onclick="append_calc('+/-')">+/−</button>
-    <button class="ios-calc-btn num" onclick="append_calc('0')">0</button>
+    <!-- Row 5: 0 (wide), ., = -->
+    <button class="ios-calc-btn num zero" onclick="append_calc('0')">0</button>
     <button class="ios-calc-btn num" onclick="append_calc('.')">.</button>
     <button class="ios-calc-btn op" onclick="calculate_calc()">=</button>
   </div>

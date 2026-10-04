@@ -90,7 +90,7 @@ function showPopup_open_close(target, mode = "flex", className = "open") {
     el.classList.add(className);
     setTimeout(() => {
       el.classList.remove("screen-incoming");
-    }, 400);
+    }, 350);
   });
 }
 
@@ -3327,3 +3327,88 @@ function preivewAnimationControlsCenter(e) {
 
   closeControlsCenter();
 }
+
+/* iOS-style interactive back swipe: drag from the left edge to go back.
+   Works with touch + mouse (Pointer Events). Only the topmost open
+   sub-screen participates; app4main (root) never swipes away. */
+(function setupIOSBackSwipe() {
+  const EDGE_ZONE = 28; // px from screen's left edge to start
+  const FINISH_RATIO = 0.32; // release past 32% width => close
+  let el = null;
+  let startX = 0, startY = 0, dx = 0;
+  let pid = null, locked = false, horizontal = false, active = false;
+  let lastSwipe = 0;
+
+  // Kill native HTML5 drag-and-drop (ghost image + ✕ cursor) inside
+  // settings screens unconditionally — it fires pointercancel and would
+  // silently abort the swipe. Nothing in the phone UI uses real DnD
+  // (file inputs open via click), so this is safe.
+  document.addEventListener("dragstart", (e) => {
+    if (e.target && e.target.closest && e.target.closest(".app4app")) e.preventDefault();
+  });
+
+  function topScreen() {
+    const open = Array.from(document.querySelectorAll(".app4app.open")).filter(
+      (s) => s.id !== "app4main" && getComputedStyle(s).display !== "none"
+    );
+    return open.length ? open[open.length - 1] : null;
+  }
+
+  document.addEventListener("pointerdown", (e) => {
+    if (e.button !== undefined && e.button !== 0) return;
+    const top = topScreen();
+    if (!top || !top.contains(e.target)) return;
+    const r = top.getBoundingClientRect();
+    if (e.clientX - r.left > EDGE_ZONE) return;
+    el = top; startX = e.clientX; startY = e.clientY;
+    dx = 0; pid = e.pointerId; locked = false; horizontal = false; active = true;
+  });
+
+  document.addEventListener("pointermove", (e) => {
+    if (!active || e.pointerId !== pid || !el) return;
+    const ddx = e.clientX - startX;
+    const ddy = e.clientY - startY;
+    if (!locked && Math.abs(ddx) + Math.abs(ddy) > 10) {
+      locked = true;
+      horizontal = Math.abs(ddx) > Math.abs(ddy) * 1.2 && ddx > 0;
+      if (!horizontal) { active = false; el = null; return; }
+      el.classList.add("swipe-drag");
+    }
+    if (!locked || !horizontal) return;
+    dx = Math.max(0, ddx);
+    el.style.transform = `translateX(calc(-50% + ${dx}px)) scale(1)`;
+  });
+
+  function end(e) {
+    if (!active || (e.pointerId !== undefined && e.pointerId !== pid)) return;
+    active = false;
+    if (!el) return;
+    const done = el;
+    el = null;
+    done.classList.remove("swipe-drag");
+    const w = done.getBoundingClientRect().width || 300;
+    if (locked && horizontal && dx > w * FINISH_RATIO) {
+      // Keep the finger position and let the close transition carry it off-screen
+      lastSwipe = Date.now();
+      hidePopup_open_close(done);
+      setTimeout(() => { done.style.transform = ""; }, 380);
+    } else {
+      done.style.transform = "";
+    }
+    dx = 0;
+  }
+  window.addEventListener("pointerup", end);
+  window.addEventListener("pointercancel", end);
+  // Failsafe: release outside the window fires neither — snap back on blur.
+  window.addEventListener("blur", () => {
+    if (!el) return;
+    el.classList.remove("swipe-drag");
+    el.style.transform = "";
+    el = null; active = false; dx = 0;
+  });
+
+  // Swallow the click that pointerup synthesizes after a real swipe
+  document.addEventListener("click", (e) => {
+    if (Date.now() - lastSwipe < 350) { e.stopPropagation(); e.preventDefault(); }
+  }, true);
+})();

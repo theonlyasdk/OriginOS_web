@@ -143,15 +143,15 @@ function prevTrack_music() {
 audioPlayer_music.ontimeupdate = () => {
   const percent =
     (audioPlayer_music.currentTime / audioPlayer_music.duration) * 100;
-  progressBar_music.value = percent || 0;
-  progressBar_music2.value = percent || 0;
+  if (progressBar_music) progressBar_music.value = percent || 0;
+  if (progressBar_music2) progressBar_music2.value = percent || 0;
 };
 
-progressBar_music.oninput = () => {
+if (progressBar_music) progressBar_music.oninput = () => {
   audioPlayer_music.currentTime =
     (progressBar_music.value / 100) * audioPlayer_music.duration;
 };
-progressBar_music2.oninput = () => {
+if (progressBar_music2) progressBar_music2.oninput = () => {
   audioPlayer_music.currentTime =
     (progressBar_music2.value / 100) * audioPlayer_music.duration;
 };

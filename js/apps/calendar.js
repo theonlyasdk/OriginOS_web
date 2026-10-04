@@ -1,4 +1,5 @@
 import { eventBus } from '../core/event_bus.js';
+import { enableDragScroll } from '../core/drag_scroll.js';
 
 /**
  * iOS Calendar App Logic
@@ -55,6 +56,8 @@ class CalendarApp {
     this.setupSystemThemeSync();
     this.bindEvents();
     this.setupSheetGesture();
+    this.setupMonthSwipe();
+    enableDragScroll(document.getElementById('cal_hours_timeline'));
     this.renderMonthView();
     this.renderDayTimeline();
   }
@@ -64,7 +67,8 @@ class CalendarApp {
       const appEl = document.getElementById('calendar_app');
       if (!appEl) return;
       const isDark = (typeof window.dark_mode !== 'undefined' && window.dark_mode === 1) ||
-        (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.body.classList.contains('dark-mode') ||
+        document.documentElement.getAttribute('data-theme') === 'dark';
 
       if (isDark) {
         appEl.classList.add('dark');
@@ -77,9 +81,6 @@ class CalendarApp {
 
     updateTheme();
 
-    if (window.matchMedia) {
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateTheme);
-    }
     eventBus.on('state:theme', updateTheme);
     eventBus.on('state:change', updateTheme);
   }
@@ -105,7 +106,7 @@ class CalendarApp {
     const year = this.selectedDate.getFullYear();
     const month = this.selectedDate.getMonth();
 
-    if (monthTitleEl) monthTitleEl.textContent = monthNames[month];
+    if (monthTitleEl) monthTitleEl.textContent = `${monthNames[month]} ${year}`;
     if (yearBtnEl) yearBtnEl.textContent = String(year);
 
     gridEl.innerHTML = '';
@@ -141,12 +142,9 @@ class CalendarApp {
       let badgesHtml = '';
       if (dayEvents.length > 0) {
         badgesHtml += '<div class="cal-event-pills">';
-        dayEvents.slice(0, 2).forEach(ev => {
-          badgesHtml += `<div class="cal-pill ${ev.color || 'blue'}">${ev.title}</div>`;
+        dayEvents.slice(0, 3).forEach(ev => {
+          badgesHtml += `<div class="cal-pill ${ev.color || 'blue'}"></div>`;
         });
-        if (dayEvents.length > 2) {
-          badgesHtml += `<div class="cal-pill-more">+${dayEvents.length - 2}</div>`;
-        }
         badgesHtml += '</div>';
       }
 
@@ -183,7 +181,9 @@ class CalendarApp {
     const dayEvents = this.events.filter(e => e.date === selectedStr);
 
     for (let hour = 0; hour < 24; hour++) {
-      const hourStr = `${String(hour).padStart(2, '0')}:00`;
+      const h12 = hour % 12 === 0 ? 12 : hour % 12;
+      const suffix = hour < 12 ? 'AM' : 'PM';
+      const hourStr = `${h12} ${suffix}`;
       const row = document.createElement('div');
       row.className = 'cal-hour-row';
 
@@ -195,10 +195,18 @@ class CalendarApp {
       slot.className = 'cal-hour-slot';
 
       dayEvents.forEach(ev => {
-        if (ev.time && ev.time.startsWith(String(hour).padStart(2, '0'))) {
+        const evHour = ev.time ? parseInt(ev.time.split(':')[0], 10) : -1;
+        if (evHour === hour) {
           const evEl = document.createElement('div');
           evEl.className = 'cal-schedule-event';
-          evEl.textContent = `${ev.title} (${ev.time})`;
+          let chipTime = ev.time || '';
+          const m = /^(\d{1,2}):(\d{2})/.exec(chipTime);
+          if (m) {
+            const h = parseInt(m[1], 10);
+            const h12 = h % 12 === 0 ? 12 : h % 12;
+            chipTime = `${h12}:${m[2]} ${h < 12 ? 'AM' : 'PM'}`;
+          }
+          evEl.textContent = `${ev.title} (${chipTime})`;
           slot.appendChild(evEl);
         }
       });
@@ -307,6 +315,84 @@ class CalendarApp {
     }, 280);
   }
 
+  setupMonthSwipe() {
+    const wrapper = document.getElementById('calendar_app')?.querySelector('.cal-views-wrapper');
+    const grid = document.getElementById('cal_month_grid');
+    const dayView = document.getElementById('cal_day_view');
+    if (!wrapper) return;
+
+    let startX = 0, startY = 0, dx = 0, dragging = false, pointerId = null, locked = false, isHorizontal = false, lastSwipe = 0;
+    const THRESHOLD = 60;
+
+    const target = () => (this.currentView === 'month' ? grid : dayView);
+    const step = (dir) => {
+      if (this.currentView === 'month') {
+        this.selectedDate = new Date(this.selectedDate.getFullYear(), this.selectedDate.getMonth() + dir, 1);
+        this.renderMonthView();
+      } else {
+        this.selectedDate = new Date(this.selectedDate.getFullYear(), this.selectedDate.getMonth(), this.selectedDate.getDate() + dir);
+        this.renderMonthView();
+        this.renderDayTimeline();
+      }
+    };
+    const animateIn = (dir, el) => {
+      if (!el) return;
+      el.style.transition = 'none';
+      el.style.transform = `translateX(${dir * 40}px)`;
+      el.style.opacity = '0.4';
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        el.style.transition = 'transform 0.28s cubic-bezier(0.16,1,0.3,1), opacity 0.25s ease';
+        el.style.transform = 'translateX(0)';
+        el.style.opacity = '1';
+        setTimeout(() => { el.style.transition = ''; el.style.transform = ''; el.style.opacity = ''; }, 300);
+      }));
+    };
+
+    wrapper.addEventListener('pointerdown', (e) => {
+      if (e.button !== undefined && e.button !== 0) return;
+      if (document.getElementById('cal_event_modal')?.classList.contains('open')) return;
+      dragging = true; locked = false; isHorizontal = false;
+      pointerId = e.pointerId; startX = e.clientX; startY = e.clientY; dx = 0;
+      try { wrapper.setPointerCapture(e.pointerId); } catch (_) {}
+    });
+
+    wrapper.addEventListener('pointermove', (e) => {
+      if (!dragging || e.pointerId !== pointerId) return;
+      const ddx = e.clientX - startX;
+      const ddy = e.clientY - startY;
+      if (!locked && Math.abs(ddx) + Math.abs(ddy) > 10) {
+        locked = true;
+        isHorizontal = Math.abs(ddx) > Math.abs(ddy) * 1.2;
+      }
+      if (!locked || !isHorizontal) return;
+      dx = ddx;
+      const el = target();
+      if (el) { el.style.transition = 'none'; el.style.transform = `translateX(${dx}px)`; }
+    });
+
+    const end = (e) => {
+      if (!dragging || (e.pointerId !== undefined && e.pointerId !== pointerId)) return;
+      dragging = false;
+      const el = target();
+      if (el) { el.style.transition = ''; el.style.transform = ''; }
+      if (locked && isHorizontal && Math.abs(dx) > THRESHOLD) {
+        lastSwipe = Date.now();
+        step(dx < 0 ? 1 : -1);
+        animateIn(dx < 0 ? 1 : -1, target());
+      }
+      dx = 0;
+    };
+    wrapper.addEventListener('pointerup', end);
+    wrapper.addEventListener('pointercancel', end);
+    window.addEventListener('pointerup', end);
+    window.addEventListener('pointercancel', end);
+
+    // Suppress click after a real swipe so day cells don't select
+    wrapper.addEventListener('click', (e) => {
+      if (Date.now() - lastSwipe < 300) { e.stopPropagation(); e.preventDefault(); }
+    }, true);
+  }
+
   setupSheetGesture() {
     const modal = document.getElementById('cal_event_modal');
     const card = document.getElementById('cal_modal_card');
@@ -336,8 +422,8 @@ class CalendarApp {
         this.currentDragY = deltaY;
         card.style.transform = `translateY(${deltaY}px)`;
       } else {
-        // Rubber band resistance upwards
-        const resistance = Math.sqrt(Math.abs(deltaY)) * 2;
+        // Rubber band resistance upwards, capped
+        const resistance = Math.min(12, Math.sqrt(Math.abs(deltaY)) * 2);
         card.style.transform = `translateY(${-resistance}px)`;
       }
     };
@@ -346,8 +432,8 @@ class CalendarApp {
       if (!this.isDraggingSheet) return;
       this.isDraggingSheet = false;
 
-      // If dragged down past 100px threshold, dismiss
-      if (this.currentDragY > 100) {
+      // If dragged down past 120px threshold, dismiss
+      if (this.currentDragY > 120) {
         this.closeEventModal();
       } else {
         // Spring snap back to origin

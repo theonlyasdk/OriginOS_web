@@ -40,13 +40,14 @@
     <div class="am-mini-art" id="am_mini_art"></div>
     <div class="am-mini-info">
       <div class="am-mini-title" id="popupTitle_music">Girls</div>
+      <div class="am-mini-artist" id="popupArtist_music">Phonk Nation</div>
     </div>
     <div class="am-mini-controls">
       <div class="am-mini-btn" id="playPauseIcon_music" onclick="event.stopPropagation(); togglePlay_music()">
-        <i class="hgi-stroke hgi-play" style="font-size: 22px;"></i>
+        <i class="hgi-stroke hgi-play" style="font-size: 28px;"></i>
       </div>
       <div class="am-mini-btn" onclick="event.stopPropagation(); nextTrack_music()">
-        <i class="hgi-stroke hgi-next" style="font-size: 22px;"></i>
+        <i class="hgi-stroke hgi-next" style="font-size: 28px;"></i>
       </div>
     </div>
   </div>
@@ -72,6 +73,42 @@
     <div class="am-tab-item">
       <i class="hgi-stroke hgi-search-01"></i>
       <span>Search</span>
+    </div>
+  </div>
+
+  <!-- Full Now Playing View (tap mini-player to expand) -->
+  <div class="am-now-playing" id="am_now_playing">
+    <div class="am-np-bg" id="am_np_bg"></div>
+    <div class="am-np-top-bar">
+      <div class="am-np-close" id="am_np_close">
+        <i class="hgi-stroke hgi-arrow-down-01" style="font-size: 24px;"></i>
+      </div>
+    </div>
+    <div class="am-np-art" id="am_np_art"></div>
+    <div class="am-np-titles">
+      <div class="am-np-title" id="am_np_title">HEADPHONK</div>
+      <div class="am-np-artist" id="am_np_artist">Phonk Nation</div>
+    </div>
+    <div class="am-np-progress">
+      <input type="range" class="am-np-slider" id="am_np_slider" value="0" min="0" max="100" step="0.1" />
+      <div class="am-np-times">
+        <span id="am_np_elapsed">0:00</span>
+        <span id="am_np_duration">0:00</span>
+      </div>
+    </div>
+    <div class="am-np-controls">
+      <div class="am-mini-btn" onclick="event.stopPropagation(); prevTrack_music()">
+        <i class="hgi-stroke hgi-next" style="font-size: 38px; transform: scaleX(-1);"></i>
+      </div>
+      <div class="am-mini-btn" id="am_np_playpause" onclick="event.stopPropagation(); togglePlay_music()">
+        <i class="hgi-stroke hgi-play" style="font-size: 64px;" id="am_np_playpause_icon"></i>
+      </div>
+      <div class="am-mini-btn" onclick="event.stopPropagation(); nextTrack_music()">
+        <i class="hgi-stroke hgi-next" style="font-size: 38px;"></i>
+      </div>
+    </div>
+    <div class="am-np-volume">
+      <input type="range" class="am-np-vol-slider" id="am_np_volume" value="100" min="0" max="100" />
     </div>
   </div>
 
