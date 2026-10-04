@@ -1,0 +1,22 @@
+:root {
+  -webkit-tap-highlight-color: transparent;
+  --bg--text_lock_screen: "";
+  --bg--color_text_lock_screen: #ffffff;
+  --bg--ratio_phone: 330 / 700;
+  --bg--size_width_phone: 330px;
+  --bg--size_height_phone: 700px;
+  --bg--border_radius_phone: 50px;
+  --bg--scale_phone: 0.8;
+  --bg--border_radius_system: 35px; /* 20-35px */
+  --bg--background: #eaeaea;
+  --bg--background2: #ffffff;
+  --bg--color: #101010;
+  --bg--wallpaper: url("../../originos_data/462489103_1400206661384168_7007140902614083639_n.jpg")
+    no-repeat center center;
+  --bg-size_img: 115%;
+
+  --bg--timeHidingIcon: 0.21s;
+  --bg--delayHidingIcon: 0s;
+  --bg--timeShowingIcon: 0.21s;
+  --bg--delayShowingIcon: 0.035s;
+}

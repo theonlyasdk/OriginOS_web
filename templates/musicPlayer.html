@@ -1,0 +1,42 @@
+<!-- Music Application Template -->
+<div id="music_container" style="position: absolute; top: 60px; left: 5%; width: 100%">
+  <div class="material-icons plus-icon_music" onclick="openFilePicker_music()">
+    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff">
+      <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
+    </svg>
+  </div>
+
+  <input type="file" id="fileInput_music" accept="audio/*" style="display: none" />
+
+  <div class="playlist_music" id="playlist_music"></div>
+
+  <div class="player-popup_music" id="playerPopup_music">
+    <div onclick="closePlayer_music()" style="background: none;">
+      <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#434343">
+        <path d="m251.33-204.67-46.66-46.66L433.33-480 204.67-708.67l46.66-46.66L480-526.67l228.67-228.66 46.66 46.66L526.67-480l228.66 228.67-46.66 46.66L480-433.33 251.33-204.67Z"/>
+      </svg>
+    </div>
+
+    <img id="popupImage_music" src="" alt="Album Art" />
+    <div class="popup-title_music" id="popupTitle_music"></div>
+    <div class="controls_music">
+      <div onclick="prevTrack_music()">
+        <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="gray">
+          <path d="M220-240v-480h66.67v480H220Zm520 0L389.33-480 740-720v480Z"/>
+        </svg>
+      </div>
+      <div onclick="togglePlay_music()" id="playPauseIcon_music">
+        <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="gray">
+          <path d="M320-202v-560l440 280-440 280Z" />
+        </svg>
+      </div>
+      <div onclick="nextTrack_music()">
+        <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="gray">
+          <path d="M673.33-240v-480H740v480h-66.67ZM220-240v-480l350.67 240L220-240Z"/>
+        </svg>
+      </div>
+    </div>
+    <audio id="audioPlayer_music" controls style="display: none"></audio>
+    <input type="range" id="progressBar_music" value="0" min="0" max="100" step="0.1" />
+  </div>
+</div>
