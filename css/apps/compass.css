@@ -1,0 +1,230 @@
+/* Compass Application Styles - Minimal & Aesthetic OPPO Vibe */
+.compass-app {
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 48px 16px 20px 16px;
+  user-select: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Top bar */
+.compass-top-bar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 8px;
+}
+
+.compass-title {
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: #f0f0f0;
+}
+
+.compass-settings-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.compass-settings-btn:active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Dial container */
+.compass-dial-container {
+  position: relative;
+  width: 250px;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+/* Center Top Needle Indicator */
+.compass-indicator-tick {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 18px;
+  background-color: #00e5b0;
+  border-radius: 2px;
+  z-index: 10;
+  box-shadow: 0 0 10px rgba(0, 229, 176, 0.6);
+}
+
+/* Rotating Dial */
+.compass-dial {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.08s ease-out;
+  will-change: transform;
+}
+
+.compass-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.compass-directions {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.compass-directions span {
+  position: absolute;
+  font-size: 13px;
+  font-weight: 600;
+  color: #777;
+  letter-spacing: 0.5px;
+}
+
+.compass-directions .dir-n {
+  top: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #00e5b0; /* Mint green for North */
+}
+
+.compass-directions .dir-e {
+  right: 36px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.compass-directions .dir-s {
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.compass-directions .dir-w {
+  left: 36px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Center Heading Display */
+.compass-center-display {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.compass-heading-number {
+  font-size: 3.2rem;
+  font-weight: 300;
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.compass-heading-cardinal {
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: #999;
+  margin-top: 6px;
+  letter-spacing: 0.5px;
+}
+
+/* Primary Direction Label */
+.compass-main-label {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #ffffff;
+  margin-top: -10px;
+  letter-spacing: 0.5px;
+}
+
+/* Latitude & Longitude display */
+.compass-coords-container {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  margin-bottom: 5px;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.coord-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.coord-tag {
+  font-size: 0.72rem;
+  letter-spacing: 1.5px;
+  color: #666;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.coord-value {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #e5e5e5;
+  letter-spacing: 0.5px;
+}
+
+/* Bottom Bar */
+.compass-bottom-bar {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.compass-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: #666;
+  cursor: pointer;
+  padding: 4px 16px;
+  border-radius: 8px;
+  transition: color 0.2s;
+}
+
+.compass-tab.active {
+  color: #00e5b0;
+}
+
+.compass-tab:active {
+  opacity: 0.7;
+}
+
+.compass-tab .tab-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

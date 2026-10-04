@@ -4,6 +4,7 @@ import * as calculator from './apps/calculator.js';
 import * as music from './apps/music.js';
 import * as stopwatch from './apps/stopwatch.js';
 import * as toastAndAlerts from './system/toast_and_alerts.js';
+import { compassApp } from './apps/compass.js';
 
 /**
  * OriginOS Application Bootstrapper
@@ -17,7 +18,8 @@ export class OriginOS {
       calculator,
       music,
       stopwatch,
-      toastAndAlerts
+      toastAndAlerts,
+      compass: compassApp
     };
   }
 
@@ -42,6 +44,7 @@ export class OriginOS {
 
   init() {
     console.log('[OriginOS] OS Core Initialized');
+    this.apps.compass.init();
     this.eventBus.emit('system:ready');
   }
 }
@@ -50,4 +53,9 @@ export const os = new OriginOS();
 
 if (typeof window !== 'undefined') {
   window.OriginOS = os;
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => os.init());
+  } else {
+    os.init();
+  }
 }
