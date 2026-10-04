@@ -5,6 +5,7 @@ import * as music from './apps/music.js';
 import * as stopwatch from './apps/stopwatch.js';
 import * as toastAndAlerts from './system/toast_and_alerts.js';
 import { compassApp } from './apps/compass.js';
+import { calendarApp } from './apps/calendar.js';
 
 /**
  * OriginOS Application Bootstrapper
@@ -19,7 +20,8 @@ export class OriginOS {
       music,
       stopwatch,
       toastAndAlerts,
-      compass: compassApp
+      compass: compassApp,
+      calendar: calendarApp
     };
   }
 
@@ -45,6 +47,7 @@ export class OriginOS {
   init() {
     console.log('[OriginOS] OS Core Initialized');
     this.apps.compass.init();
+    this.apps.calendar.init();
     this.eventBus.emit('system:ready');
   }
 }

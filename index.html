@@ -52,6 +52,7 @@
     />
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="css/apps/compass.css" />
+    <link rel="stylesheet" href="css/apps/calendar.css" />
   </head>
   <body>
     <div id="loading-screen">
@@ -3577,7 +3578,97 @@
         </div>
         <div class="box" id="box7">
           <div class="app" id="app7">
-            <div class="center_item">Calendar</div>
+            <!-- iOS Inspired Calendar Application -->
+            <div class="calendar-app" id="calendar_app">
+              <div class="calendar-nav-bar">
+                <div class="cal-nav-left" id="cal_prev_month_btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                    <path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"/>
+                  </svg>
+                  <span id="cal_year_btn">2026</span>
+                </div>
+                <div class="cal-nav-right">
+                  <div class="cal-icon-btn" id="cal_theme_toggle_btn" title="Toggle Theme">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                      <path d="M480-120q-150 0-255-105T120-480q0-150 105-255t255-105q14 0 27.5 1t26.5 3q-41 29-65.5 75.5T444-660q0 90 63 153t153 63q55 0 101-24.5t76-65.5q2 13 3 26.5t1 27.5q0 150-105 255T480-120Z"/>
+                    </svg>
+                  </div>
+                  <div class="cal-icon-btn" id="cal_search_btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                      <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/>
+                    </svg>
+                  </div>
+                  <div class="cal-icon-btn" id="cal_add_event_btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="currentColor">
+                      <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <div class="cal-month-header">
+                <div class="cal-month-title" id="cal_month_title">April</div>
+              </div>
+
+              <div class="cal-weekdays">
+                <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+              </div>
+
+              <div class="cal-views-wrapper">
+                <div class="cal-month-grid" id="cal_month_grid"></div>
+
+                <div class="cal-day-view" id="cal_day_view">
+                  <div class="cal-day-header-banner" id="cal_day_header_banner">
+                    Wednesday — Apr 1, 2026
+                  </div>
+                  <div class="cal-hours-timeline" id="cal_hours_timeline"></div>
+                </div>
+              </div>
+
+              <div class="cal-bottom-bar">
+                <div class="cal-today-btn" id="cal_today_btn">Today</div>
+                <div class="cal-segmented-controls">
+                  <div class="cal-seg-btn active" id="cal_seg_month">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="currentColor">
+                      <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Z"/>
+                    </svg>
+                    <span>Month</span>
+                  </div>
+                  <div class="cal-seg-btn" id="cal_seg_day">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="currentColor">
+                      <path d="M280-280h400v-80H280v80Zm0-160h400v-80H280v80Zm0-160h400v-80H280v80ZM160-120q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h640q33 0 56.5 23.5T880-760v560q0 33-23.5 56.5T800-120H160Z"/>
+                    </svg>
+                    <span>Day</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="cal-modal-backdrop" id="cal_event_modal">
+                <div class="cal-modal-card">
+                  <div class="cal-modal-header">
+                    <div class="cal-modal-close" id="cal_modal_cancel_btn">✕</div>
+                    <div class="cal-modal-title">New Event</div>
+                    <div class="cal-modal-save" id="cal_modal_save_btn">✓</div>
+                  </div>
+
+                  <div class="cal-input-group">
+                    <input type="text" class="cal-input-field" id="cal_new_title" placeholder="Event Title" />
+                    <div class="cal-input-divider"></div>
+                    <input type="text" class="cal-input-field" id="cal_new_location" placeholder="Location or Video Call" />
+                  </div>
+
+                  <div class="cal-form-row">
+                    <span>Starts</span>
+                    <span class="cal-form-badge" id="cal_modal_date_badge">Apr 1, 2026</span>
+                  </div>
+
+                  <div class="cal-form-row">
+                    <span>Time</span>
+                    <input type="time" id="cal_new_time" value="12:00" style="border:none; background:transparent; color:inherit; font-weight:600;" />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="box" id="box8">
